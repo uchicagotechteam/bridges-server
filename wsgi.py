@@ -3,7 +3,7 @@ import os, sys
 
 sys.path.append(os.path.join(os.environ['OPENSHIFT_REPO_DIR']))
 
-os.environ['DJANGO_SETTINGS_MODULE'] = 'bridges-server.settings'
+os.environ['DJANGO_SETTINGS_MODULE'] = 'bridges_server.settings'
 
 virtenv = os.environ['OPENSHIFT_PYTHON_DIR'] + '/virtenv/'
 
