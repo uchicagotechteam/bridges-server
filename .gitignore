@@ -1,0 +1,5 @@
+# Ignore pyc files
+*.pyc
+
+# Ignore database migrations
+bridges_server/bridges_api/migrations/*
