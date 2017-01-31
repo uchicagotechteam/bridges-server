@@ -123,6 +123,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 if os.environ.get('OPENSHIFT_PYTHON_DIR'):
-    virtenv = os.environ.get('OPENSHIFT_PYTHON_DIR') + '/virtenv/'
-    STATIC_URL = os.path.join(virtenv, 'lib/python2.7/site-packages/')
     DEBUG = False
+
+STATIC_URL = '/static/'
