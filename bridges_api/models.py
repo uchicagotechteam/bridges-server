@@ -11,17 +11,17 @@ class UserProfile(models.Model):
     Look at https://goo.gl/fwZk1w for further explanation
     """
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    first_name = models.CharField(max_length=255, null=True)
-    last_name = models.CharField(max_length=255, null=True)
-    email = models.EmailField(null=True)
-    date_of_birth = models.DateField(null=True)
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
+    email = models.EmailField()
+    date_of_birth = models.DateField()
     # All the following fields should be chosen from a list of valid inputs
     # on the backend and frontend. In this example they're just comma separated
     # strings
-    gender = models.CharField(max_length=255, null=True)
-    disabilities = models.CharField(max_length=255, null=True)
-    ethnicity = models.CharField(max_length=255, null=True)
-    current_employer = models.CharField(default="Unemployed", max_length=255, null=True)
+    gender = models.CharField(max_length=255)
+    disabilities = models.CharField(max_length=255)
+    ethnicity = models.CharField(max_length=255, blank=True)
+    current_employer = models.CharField(default="Unemployed", max_length=255, blank=True)
 
     @property
     def full_name(self):
@@ -38,12 +38,13 @@ def create_user_profile(sender, instance, created, **kwargs):
    django user model has been saved. This lets us create a matching
    (empty) UserProfile whenever a user is created
    """
-   if created:
+   if created and not instance.is_superuser:
        UserProfile.objects.get_or_create(user=instance)
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
-   instance.userprofile.save()
+    if not instance.is_superuser:
+        instance.userprofile.save()
 
 class Question(models.Model):
     title = models.CharField(max_length=300)
