@@ -125,4 +125,5 @@ USE_TZ = True
 if os.environ.get('OPENSHIFT_PYTHON_DIR'):
     DEBUG = False
 
+STATIC_ROOT = '/static/'
 STATIC_URL = '/static/'
