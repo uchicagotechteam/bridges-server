@@ -125,10 +125,10 @@ USE_TZ = True
 if os.environ['OPENSHIFT_REPO_DIR']:
     STATIC_ROOT = os.path.join(os.environ['OPENSHIFT_REPO_DIR'])
 else:
-    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+    STATIC_ROOT = os.path.join(BASE_DIR, '/wsgi/static')
 
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
-    ("rest_framework", os.path.join(STATIC_ROOT,'rest_framework')),
+    os.path.join(BASE_DIR, 'static/'),
 )
