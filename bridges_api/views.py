@@ -47,7 +47,7 @@ class QuestionList(generics.ListAPIView):
     """
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
-    #permission_classes = (permissions.IsAuthenticated,)
+    # permission_classes = (permissions.IsAuthenticated,)
 
 class QuestionDetail(generics.RetrieveUpdateDestroyAPIView):
     """
@@ -55,12 +55,12 @@ class QuestionDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
-    permission_classes = (permissions.IsAuthenticated,)
+    # permission_classes = (permissions.IsAuthenticated,)
 
 class UserList(generics.ListCreateAPIView):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
-    #permission_classes = (MustBeSuperUserToGET,)
+    # permission_classes = (MustBeSuperUserToGET,)
 
     def post(self, request, *args, **kwargs):
         """
