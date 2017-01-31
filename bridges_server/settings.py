@@ -125,4 +125,4 @@ USE_TZ = True
 if os.environ.get('OPENSHIFT_PYTHON_DIR'):
     virtenv = os.environ.get('OPENSHIFT_PYTHON_DIR') + '/virtenv/'
     STATIC_ROOT = os.path.join(virtenv, 'lib/python2.7/site-packages') + '/rest_framework'
-    STATIC_URL = os.path.join(virtenv, 'lib/python2.7/site-packages') + '/rest_framework'
+    STATIC_URL = os.path.join(virtenv, 'lib/python2.7/site-packages') + '/rest_framework/'
