@@ -124,6 +124,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 if os.environ.get('OPENSHIFT_PYTHON_DIR'):
     DEBUG = False
+    STATIC_ROOT = os.environ.get('OPENSHIFT_REPO_DIR') + '/bridges_server/static'
+    STATICFILES_DIRS = (
+        os.path.join(BASE_DIR, 'static'),
+    )
+    print "Hellllllo World!"
 
-STATIC_ROOT = os.path.join(BASE_DIR, '..', 'static')
 STATIC_URL = '/static/'
