@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'bridges_api.apps.BridgesApiConfig',
+    'rest_framework.authtoken',
 ]
 
 REST_FRAMEWORK = {
