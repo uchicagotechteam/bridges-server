@@ -1,9 +1,10 @@
-from bridges_api.models import Question, UserProfile, Tag
+from bridges_api.models import Question, UserProfile, Employer, Tag
 from bridges_api.serializers import (
     QuestionSerializer,
     UserSerializer,
     UserProfileSerializer,
     TagSerializer
+    EmployerSerializer,
 )
 from bridges_api.permissions import MustBeSuperUserToGET
 
@@ -37,6 +38,7 @@ def api_root(request, format=None):
     return Response({
         'questions': reverse('questions-list', request=request, format=format),
         'users': reverse('user-list', request=request, format=format),
+        'employers': reverse('employer-list', request=request, format=format)
     })
 
 class QuestionList(generics.ListAPIView):
@@ -98,10 +100,6 @@ class UserList(generics.ListCreateAPIView):
         }, status=status.HTTP_400_BAD_REQUEST)
 
 class UserDetail(generics.RetrieveAPIView):
-    """
-    Returns all the information tethered to a specific user
-    Should be whichever user id is in /users/<id> when that endpoint is hit
-    """
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
     permissions = (permissions.IsAuthenticated,)
@@ -109,3 +107,11 @@ class UserDetail(generics.RetrieveAPIView):
 class TagList(generics.ListAPIView):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+
+class EmployerList(generics.ListAPIView):
+    queryset = Employer.objects.all()
+    serializer_class = EmployerSerializer
+
+class EmployerDetail(generics.RetrieveAPIView):
+    queryset = Employer.objects.all()
+    serializer_class = EmployerSerializer

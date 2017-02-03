@@ -71,3 +71,11 @@ class Question(models.Model):
 
     def __unicode__(self):
         return u'%s' % (self.title)
+
+class Employer(models.Model):
+    name = models.CharField(max_length=255)
+    address = models.CharField(max_length=255, blank=True)
+    # rating should be out of 10 and return an error if no value is given, tests: 0<=rating<=10
+    rating = models.DecimalField(max_digits=10, decimal_places=1)
+    averagesalary = models.DecimalField(default=0,max_digits=10, decimal_places=1)
+    questions = models.ManyToManyField(Question)
