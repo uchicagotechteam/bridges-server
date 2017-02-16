@@ -17,8 +17,8 @@ class QuestionAdmin(admin.ModelAdmin):
     list_display = ('title',)
 
 class TagAdmin(admin.ModelAdmin):
-    fields = ('name',)
-    list_display = ('name',)
+    fields = ('attribute','value')
+    list_display = ('value',)
 
 class EmployerAdmin(admin.ModelAdmin):
 	list_display=('name',)

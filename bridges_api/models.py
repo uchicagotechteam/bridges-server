@@ -49,7 +49,6 @@ def save_user_profile(sender, instance, **kwargs):
         instance.userprofile.save()
 
 class Tag(models.Model):
-    name = models.CharField(max_length=50)
     slug = models.CharField(max_length=50, unique=True)
     attribute = models.CharField(max_length=100)
     value = models.CharField(max_length=100)
