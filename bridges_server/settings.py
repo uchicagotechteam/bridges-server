@@ -135,7 +135,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 if os.environ.get('OPENSHIFT_REPO_DIR'):
-    print "On openshift maaaan!"
     STATIC_ROOT = '/var/lib/openshift/588fc6a62d52718caf0001c7/app-root/runtime'
 
 STATIC_URL = '/static/'
