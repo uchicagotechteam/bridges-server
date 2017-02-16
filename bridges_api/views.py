@@ -35,7 +35,10 @@ def restrict_fields(query_dict, fields):
 @api_view(['GET'])
 def api_root(request, format=None):
     """
-    This is the main page of the API for the Bridges to Work Virtual Mentor.
+    This is the main page of the API for the Bridges from School to Work virtual\
+    mentor.
+    The API provides access to questions, employers, and users.
+    It can also recommend questions based on a user's profile.
     """
     return Response({
         'users': reverse('user-list', request=request, format=format),
