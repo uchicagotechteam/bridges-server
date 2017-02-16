@@ -19,7 +19,7 @@ from rest_framework.reverse import reverse
 from rest_framework.parsers import JSONParser
 from rest_framework.authtoken.models import Token
 
-import bridges_api.recommendations
+from bridges_api import recommendations
 
 def restrict_fields(query_dict, fields):
     """
@@ -54,7 +54,7 @@ class QuestionList(generics.ListAPIView):
 
     def get(self, request, *args, **kwargs):
         profile = UserProfile.objects.get(user=request.user)
-        import pdb; pdb.set_trace()
+        recommendations.recommend(profile, Question)
 
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
