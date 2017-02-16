@@ -3,8 +3,8 @@ from bridges_api.serializers import (
     QuestionSerializer,
     UserSerializer,
     UserProfileSerializer,
-    TagSerializer
-    EmployerSerializer,
+    TagSerializer,
+    EmployerSerializer
 )
 from bridges_api.permissions import MustBeSuperUserToGET
 
@@ -36,9 +36,10 @@ def api_root(request, format=None):
     renders it directly, no template necessary!
     """
     return Response({
-        'questions': reverse('questions-list', request=request, format=format),
         'users': reverse('user-list', request=request, format=format),
-        'employers': reverse('employer-list', request=request, format=format)
+        'questions': reverse('question-list', request=request, format=format),
+        'employers': reverse('employer-list', request=request, format=format),
+        'tags': reverse('tag-list', request=request, format=format)
     })
 
 class QuestionList(generics.ListAPIView):

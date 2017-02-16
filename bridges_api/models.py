@@ -54,7 +54,7 @@ class Tag(models.Model):
     value = models.CharField(max_length=100)
 
     def __unicode__(self):
-        return u'%s' % (self.name)
+        return u'%s' % (self.value)
 
     def save(self, *args, **kwargs):
         self.slug = slugify((self.attribute + self.value).replace(' ', ''))
@@ -76,6 +76,6 @@ class Question(models.Model):
 class Employer(models.Model):
     name = models.CharField(max_length=255)
     address = models.CharField(max_length=255, blank=True)
-    rating = models.DecimalField(max_digits=3, decimal_places=0)
-    averagesalary = models.DecimalField(default=0,max_digits=10, decimal_places=2)
-    questions = models.ForeignKey(Question)
+    rating = models.DecimalField(max_digits=2, decimal_places=0, default=0)
+    averagesalary = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    questions = models.ManyToManyField(Question)

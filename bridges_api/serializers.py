@@ -25,7 +25,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = ('name')
+        fields = ('attribute', 'value')
 
 class EmployerSerializer(serializers.ModelSerializer):
     class Meta:
