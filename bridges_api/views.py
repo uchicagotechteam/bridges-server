@@ -1,8 +1,9 @@
-from bridges_api.models import Question, UserProfile
+from bridges_api.models import Question, UserProfile, Tag
 from bridges_api.serializers import (
     QuestionSerializer,
     UserSerializer,
-    UserProfileSerializer
+    UserProfileSerializer,
+    TagSerializer
 )
 from bridges_api.permissions import MustBeSuperUserToGET
 
@@ -47,7 +48,7 @@ class QuestionList(generics.ListAPIView):
     """
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
-    # permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated,)
 
 class QuestionDetail(generics.RetrieveUpdateDestroyAPIView):
     """
@@ -55,12 +56,12 @@ class QuestionDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
-    # permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated,)
 
 class UserList(generics.ListCreateAPIView):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
-    # permission_classes = (MustBeSuperUserToGET,)
+    permission_classes = (MustBeSuperUserToGET,)
 
     def post(self, request, *args, **kwargs):
         """
@@ -103,3 +104,8 @@ class UserDetail(generics.RetrieveAPIView):
     """
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
+    permissions = (permissions.IsAuthenticated,)
+
+class TagList(generics.ListAPIView):
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer

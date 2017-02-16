@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^questions/(?P<pk>[0-9]+)/$', views.QuestionDetail.as_view()),
     url(r'^users/$', views.UserList.as_view(), name='user-list'),
     url(r'^users/(?P<pk>[0-9]+)/$', views.UserDetail.as_view()),
+    url(r'^tags/$', views.TagList.as_view(), name='tag-list'),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
