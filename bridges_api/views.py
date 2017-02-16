@@ -32,8 +32,7 @@ def restrict_fields(query_dict, fields):
 @api_view(['GET'])
 def api_root(request, format=None):
     """
-    The response object is dank, and takes a python dictionary and
-    renders it directly, no template necessary!
+    This is the main page of the API for the Bridges to Work Virtual Mentor.
     """
     return Response({
         'users': reverse('user-list', request=request, format=format),
