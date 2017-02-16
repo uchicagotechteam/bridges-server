@@ -15,7 +15,7 @@ class UserProfile(models.Model):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     email = models.EmailField()
-    date_of_birth = models.DateField()
+    date_of_birth = models.DateField(null=True, blank=True)
     # All the following fields should be chosen from a list of valid inputs
     # on the backend and frontend. In this example they're just comma separated
     # strings
