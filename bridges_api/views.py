@@ -19,6 +19,8 @@ from rest_framework.reverse import reverse
 from rest_framework.parsers import JSONParser
 from rest_framework.authtoken.models import Token
 
+import bridges_api.recommendations
+
 def restrict_fields(query_dict, fields):
     """
     Filters the fields in a query_dict based on a list
@@ -49,6 +51,11 @@ class QuestionList(generics.ListAPIView):
     variable is the list of Question Models that ultimately gets
     serialized and returned to the User
     """
+
+    def get(self, request, *args, **kwargs):
+        profile = UserProfile.objects.get(user=request.user)
+        import pdb; pdb.set_trace()
+
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
     permission_classes = (permissions.IsAuthenticated,)
