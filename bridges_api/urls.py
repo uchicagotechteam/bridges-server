@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^questions/(?P<pk>[0-9]+)/$', views.QuestionDetail.as_view()),
     url(r'^users/$', views.UserList.as_view(), name='user-list'),
     url(r'^users/(?P<pk>[0-9]+)/$', views.UserDetail.as_view()),
+    url(r'^auth/$', views.ExampleAuthView.as_view(), name='auth-test'),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
