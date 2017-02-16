@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.text import slugify
+from django.contrib.contenttypes.fields import GenericRelation
 
 class UserProfile(models.Model):
     """
@@ -48,15 +49,15 @@ def save_user_profile(sender, instance, **kwargs):
         instance.userprofile.save()
 
 class Tag(models.Model):
-    name = models.CharField(max_length=50)
     slug = models.CharField(max_length=50, unique=True)
-    attributes = models.CharField(max_length=100, blank=True, null=True)
+    attribute = models.CharField(max_length=100)
+    value = models.CharField(max_length=100)
 
     def __unicode__(self):
-        return u'%s' % (self.name)
+        return u'%s' % (self.value)
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.name.replace(' ', ''))
+        self.slug = slugify((self.attribute + self.value).replace(' ', ''))
         if (len(type(self).objects.filter(slug=self.slug)) != 0):
             raise ValueError("Tag is not unique")
 
@@ -66,8 +67,15 @@ class Question(models.Model):
     title = models.CharField(max_length=300)
     description = models.TextField(blank=True)
     answer = models.TextField(blank=True)
-    tags = models.ForeignKey(Tag)
+    tags = models.ManyToManyField(Tag)
     number_of_views = models.IntegerField(default=0)
 
     def __unicode__(self):
         return u'%s' % (self.title)
+
+class Employer(models.Model):
+    name = models.CharField(max_length=255)
+    address = models.CharField(max_length=255, blank=True)
+    rating = models.DecimalField(max_digits=2, decimal_places=0, default=0)
+    averagesalary = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    questions = models.ManyToManyField(Question)
