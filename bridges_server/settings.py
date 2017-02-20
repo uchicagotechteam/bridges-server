@@ -84,12 +84,24 @@ WSGI_APPLICATION = 'bridges_server.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
-DATABASES = {
+if os.environ.get('OPENSHIFT_REPO_DIR'):
+    DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'bridgesapi',
+        'USER': 'adminQSup1m6',
+        'PASSWORD':'VyzqateyyIub',
+        'HOST': os.environ['OPENSHIFT_MYSQL_DB_HOST'],
+        'PORT': os.environ['OPENSHIFT_MYSQL_DB_PORT'],
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
 
 
 # Password validation
@@ -124,8 +136,9 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
-STATIC_ROOT = os.path.join(BASE_DIR, '..', 'static')
+if os.environ.get('OPENSHIFT_REPO_DIR'):
+    STATIC_ROOT = '/var/lib/openshift/588fc6a62d52718caf0001c7/app-root/runtime'
+
 STATIC_URL = '/static/'

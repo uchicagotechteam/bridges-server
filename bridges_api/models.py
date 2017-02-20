@@ -6,6 +6,8 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.conf import settings
 from rest_framework.authtoken.models import Token
+from django.utils.text import slugify
+from django.contrib.contenttypes.fields import GenericRelation
 
 class UserProfile(models.Model):
     """
@@ -16,7 +18,7 @@ class UserProfile(models.Model):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     email = models.EmailField()
-    date_of_birth = models.DateField()
+    date_of_birth = models.DateField(null=True, blank=True)
     # All the following fields should be chosen from a list of valid inputs
     # on the backend and frontend. In this example they're just comma separated
     # strings
@@ -53,9 +55,34 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
 
+class Tag(models.Model):
+    slug = models.CharField(max_length=50, unique=True)
+    attribute = models.CharField(max_length=100)
+    value = models.CharField(max_length=100)
+
+    def __unicode__(self):
+        return u'%s' % (self.value)
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify((self.attribute + self.value).replace(' ', ''))
+        if (len(type(self).objects.filter(slug=self.slug)) != 0):
+            raise ValueError("Tag is not unique")
+
+        super(Tag, self).save(*args, **kwargs)
+
 class Question(models.Model):
     title = models.CharField(max_length=300)
     description = models.TextField(blank=True)
     answer = models.TextField(blank=True)
-    tags = models.CharField(max_length=300)
+    tags = models.ManyToManyField(Tag)
     number_of_views = models.IntegerField(default=0)
+
+    def __unicode__(self):
+        return u'%s' % (self.title)
+
+class Employer(models.Model):
+    name = models.CharField(max_length=255)
+    address = models.CharField(max_length=255, blank=True)
+    rating = models.DecimalField(max_digits=2, decimal_places=0, default=0)
+    averagesalary = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    questions = models.ManyToManyField(Question)
