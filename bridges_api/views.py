@@ -55,9 +55,14 @@ class QuestionList(generics.ListAPIView):
     serialized and returned to the User
     """
 
-    def get(self, request, *args, **kwargs):
-        profile = UserProfile.objects.get(user=request.user)
-        recommendations.recommend(profile, Question)
+    # def get(self, request, *args, **kwargs):
+    #     try:
+    #         profile = UserProfile.objects.get(user=request.user)
+    #     except UserProfile.DoesNotExist:
+    #         profile = None
+    #
+    #     if (profile):
+    #         recommendations.recommend(profile, Question)
 
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
