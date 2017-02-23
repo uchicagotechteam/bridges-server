@@ -2,12 +2,6 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from bridges_api.models import Question, UserProfile, Tag, Employer
 
-class QuestionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Question
-        fields = ('id', 'title', 'description', 'answer',
-                  'tags', 'number_of_views')
-
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -26,6 +20,13 @@ class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = ('attribute', 'value')
+
+class QuestionSerializer(serializers.ModelSerializer):
+    tags = TagSerializer(many=True)
+    class Meta:
+        model = Question
+        fields = ('id', 'title', 'description', 'answer',
+                  'tags', 'number_of_views')
 
 class EmployerSerializer(serializers.ModelSerializer):
     class Meta:
