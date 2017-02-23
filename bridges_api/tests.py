@@ -5,6 +5,24 @@ from rest_framework.test import APITestCase
 from rest_framework.test import APIClient
 from bridges_api.models import Question
 
+def create_user_and_set_auth(bridges_client):
+    data = {
+        "username": "testUser",
+        "password": "testPassword",
+        "date_of_birth": "2014-01-01",
+        "gender": "male",
+        "ethnicity": "n/a",
+        "disabilities": "n/a",
+        "current_employer": "n/a",
+        "first_name": "test",
+        "last_name": "user",
+        "email": "test@user.mail"
+    }
+    response = bridges_client.post('/users/', data, format='json')
+    if response.status_code == status.HTTP_201_CREATED:
+        token = response.json()["token"]
+        bridges_client.credentials(HTTP_AUTHORIZATION='Token ' + token)
+
 class QuestionTests(APITestCase):
     bridges_client = APIClient()
 
@@ -12,6 +30,7 @@ class QuestionTests(APITestCase):
         """
         Make sure getting question returns the whole question properly
         """
+        create_user_and_set_auth(self.bridges_client)
         test_title = 'Where does the muffin man live?'
         test_description = 'Many have seen the muffin man,\
         but few know where he resides'
@@ -37,7 +56,7 @@ class QuestionTests(APITestCase):
         """
         Make sure that POST requests are not allowed (i.e questions can't be created)
         """
-
+        create_user_and_set_auth(self.bridges_client)
         data = {
             'title': "Why don't we support creating questions via POST?",
             'answer': "That's a big burden for the mobile team, and is not in the MVP"
@@ -46,3 +65,26 @@ class QuestionTests(APITestCase):
         response = self.bridges_client.post('/questions/', data, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+class UserTests(APITestCase):
+    bridges_client = APIClient()
+
+    def test_token_authentication(self):
+        """
+        Ensure that tokens are received upon user creation and can be used to
+        access pages that require permissions.
+        """
+        response = self.bridges_client.get('/questions/')
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        create_user_and_set_auth(self.bridges_client)
+        response = self.bridges_client.get('/questions/')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        invalid = "2b222ce510a9a2c17b3b973ec5b053c5a45b0391"
+        self.bridges_client.credentials(HTTP_AUTHORIZATION='Token '+invalid)
+        response = self.bridges_client.get('/questions/')
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
