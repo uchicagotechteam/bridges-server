@@ -5,9 +5,10 @@ from rest_framework.test import APITestCase
 from rest_framework.test import APIClient
 from bridges_api.models import Question
 
-def create_user_and_set_auth(bridges_client):
+def set_auth(bridges_client):
+    bridges_client.credentials()
     data = {
-        "username": "testUser",
+        "username": "testUser123",
         "password": "testPassword",
         "date_of_birth": "2014-01-01",
         "gender": "male",
@@ -19,9 +20,15 @@ def create_user_and_set_auth(bridges_client):
         "email": "test@user.mail"
     }
     response = bridges_client.post('/users/', data, format='json')
-    if response.status_code == status.HTTP_201_CREATED:
-        token = response.json()["token"]
-        bridges_client.credentials(HTTP_AUTHORIZATION='Token ' + token)
+    if response.status_code != status.HTTP_201_CREATED: # User already exists
+        data = {
+            "username": "testUser123",
+            "password": "testPassword"
+        }
+        response = bridges_client.post('/api-token-auth/', data, format='json')
+
+    token = response.json()["token"]
+    bridges_client.credentials(HTTP_AUTHORIZATION='Token ' + token)
 
 class QuestionTests(APITestCase):
     bridges_client = APIClient()
@@ -30,7 +37,7 @@ class QuestionTests(APITestCase):
         """
         Make sure getting question returns the whole question properly
         """
-        create_user_and_set_auth(self.bridges_client)
+        set_auth(self.bridges_client)
         test_title = 'Where does the muffin man live?'
         test_description = 'Many have seen the muffin man,\
         but few know where he resides'
@@ -56,7 +63,7 @@ class QuestionTests(APITestCase):
         """
         Make sure that POST requests are not allowed (i.e questions can't be created)
         """
-        create_user_and_set_auth(self.bridges_client)
+        set_auth(self.bridges_client)
         data = {
             'title': "Why don't we support creating questions via POST?",
             'answer': "That's a big burden for the mobile team, and is not in the MVP"
@@ -78,7 +85,7 @@ class UserTests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-        create_user_and_set_auth(self.bridges_client)
+        set_auth(self.bridges_client)
         response = self.bridges_client.get('/questions/')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
