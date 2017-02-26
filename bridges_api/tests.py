@@ -42,11 +42,11 @@ class QuestionTests(APITestCase):
         test_description = 'Many have seen the muffin man,\
         but few know where he resides'
         test_answer = 'The muffin man lives on cherry lane'
-        test_tags = 'fairies, baking, cooking'
         test_num_views = 1025
 
+
         Question.objects.create(title=test_title, description=test_description,
-        answer=test_answer, tags=test_tags, number_of_views=test_num_views)
+        answer=test_answer, number_of_views=test_num_views)
         saved_question = Question.objects.get()
 
         response = self.bridges_client.get('/questions/')
@@ -56,7 +56,6 @@ class QuestionTests(APITestCase):
         self.assertEqual(returned_question['title'], saved_question.title)
         self.assertEqual(returned_question['description'], saved_question.description)
         self.assertEqual(returned_question['answer'], saved_question.answer)
-        self.assertEqual(returned_question['tags'], saved_question.tags)
         self.assertEqual(returned_question['number_of_views'], saved_question.number_of_views)
 
     def test_post_question(self):
