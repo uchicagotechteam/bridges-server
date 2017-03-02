@@ -6,6 +6,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.text import slugify
 from django.contrib.contenttypes.fields import GenericRelation
+from django.core.exceptions import ValidationError
 
 class UserProfile(models.Model):
     """
@@ -56,12 +57,11 @@ class Tag(models.Model):
     def __unicode__(self):
         return u'%s' % (self.value)
 
-    def save(self, *args, **kwargs):
-        self.slug = slugify((self.attribute + self.value).replace(' ', ''))
+    def clean(self): 
+    	self.slug = slugify((self.attribute + self.value).replace(' ', ''))
         if (len(type(self).objects.filter(slug=self.slug)) != 0):
-            raise ValueError("Tag is not unique")
-
-        super(Tag, self).save(*args, **kwargs)
+            raise ValidationError("Tag is not unique")
+        return self
 
 class Question(models.Model):
     title = models.CharField(max_length=300)
