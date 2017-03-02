@@ -88,7 +88,7 @@ class UserList(generics.ListCreateAPIView):
                                                                    data=profile_data)
                if tethered_profile_serializer.is_valid():
                    tethered_profile_serializer.save()
-                   token,created = Token.objects.get_or_create(user=new_user)
+                   token, created = Token.objects.get_or_create(user=new_user)
 
                    return Response({
                        'user_id': new_user.pk,
