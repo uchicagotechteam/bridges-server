@@ -7,7 +7,6 @@ from django.dispatch import receiver
 from django.conf import settings
 from rest_framework.authtoken.models import Token
 from django.utils.text import slugify
-from django.contrib.contenttypes.fields import GenericRelation
 from django.core.exceptions import ValidationError
 
 class UserProfile(models.Model):
