@@ -16,9 +16,11 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from bridges_api import views
+from rest_framework.authtoken import views as auth_views
 
 urlpatterns = [
     url(r'^$', views.api_root),
     url(r'^admin/', admin.site.urls),
-    url(r'^', include('bridges_api.urls'))
+    url(r'^', include('bridges_api.urls')),
+    url(r'^api-token-auth/', auth_views.obtain_auth_token)
 ]

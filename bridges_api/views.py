@@ -17,6 +17,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.parsers import JSONParser
+from rest_framework.authtoken.models import Token
 
 def restrict_fields(query_dict, fields):
     """
@@ -87,8 +88,11 @@ class UserList(generics.ListCreateAPIView):
                                                                    data=profile_data)
                if tethered_profile_serializer.is_valid():
                    tethered_profile_serializer.save()
+                   token, created = Token.objects.get_or_create(user=new_user)
+
                    return Response({
-                        'user_id': new_user.pk
+                       'user_id': new_user.pk,
+                       'token': token.key
                    }, status=status.HTTP_201_CREATED)
 
             return Response({
