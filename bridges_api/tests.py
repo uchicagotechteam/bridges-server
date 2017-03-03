@@ -72,6 +72,43 @@ class QuestionTests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
+    def test_search_question(self):
+        """
+        Tests searching for questions via text
+        """
+        set_auth(self.bridges_client)
+        test_title = 'Where does the muffin man live?'
+        test_description = 'Many have seen the muffin man,\
+        but few know where he resides'
+        test_answer = 'The muffin man lives on cherry lane'
+        test_num_views = 1025
+
+
+        Question.objects.create(title=test_title, description=test_description,
+        answer=test_answer, number_of_views=test_num_views)
+
+        test_title2 = "How much wood could a woodchuck chuck?"
+        test_description2 = "Woodchucks are indigenous to the swamp"
+        test_answer2 = "A lot of wood"
+
+        Question.objects.create(title=test_title2, description=test_description2,
+        answer=test_answer2, number_of_views=test_num_views)
+
+        response = self.bridges_client.get('/questions/', {'search': 'wood'})
+        returned_questions = response.json()['results']
+        self.assertEqual(len(returned_questions), 1, "incorrect amount of results")
+        self.assertEqual(returned_questions[0].get('title'), test_title2)
+
+        response = self.bridges_client.get('/questions/', {'search': 'wood chuck'})
+        returned_questions = response.json()['results']
+        self.assertEqual(len(returned_questions), 1, "incorrect amount of results")
+        self.assertEqual(returned_questions[0].get('title'), test_title2)
+
+        response = self.bridges_client.get('/questions/', {'search': 'muffin wood'})
+        returned_questions = response.json()['results']
+        self.assertEqual(len(returned_questions),2, "incorrect amount of results")
+
+
 class UserTests(APITestCase):
     bridges_client = APIClient()
 

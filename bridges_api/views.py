@@ -53,7 +53,7 @@ class QuestionList(generics.ListAPIView):
     serialized and returned to the User
     """
     serializer_class = QuestionSerializer
-    #permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
         search_term = self.request.query_params.get('search')
