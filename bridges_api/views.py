@@ -1,3 +1,5 @@
+import operator
+
 from bridges_api.models import Question, UserProfile, Employer, Tag
 from bridges_api.serializers import (
     QuestionSerializer,
@@ -9,6 +11,7 @@ from bridges_api.serializers import (
 from bridges_api.permissions import MustBeSuperUserToGET
 
 from django.contrib.auth.models import User
+from django.db.models import Q
 
 from rest_framework import generics
 from rest_framework import permissions
@@ -49,9 +52,25 @@ class QuestionList(generics.ListAPIView):
     variable is the list of Question Models that ultimately gets
     serialized and returned to the User
     """
-    queryset = Question.objects.all()
     serializer_class = QuestionSerializer
-    permission_classes = (permissions.IsAuthenticated,)
+    #permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        search_term = self.request.query_params.get('search')
+        if (search_term):
+            search_terms = search_term.split()
+            queryset = list(Question.objects.filter(
+                reduce(operator.and_, (Q(answer__contains = term) for term in search_terms)) |
+                reduce(operator.and_, (Q(title__contains = term) for term in search_terms)) |
+                reduce(operator.and_, (Q(description__contains = term) for term in search_terms))
+            ))
+
+            if (queryset):
+                return queryset
+
+        return Question.objects.all()
+
+
 
 class QuestionDetail(generics.RetrieveUpdateDestroyAPIView):
     """
