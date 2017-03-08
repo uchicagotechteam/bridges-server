@@ -4,7 +4,7 @@ from rest_framework.test import APIRequestFactory
 from rest_framework.test import APITestCase
 from rest_framework.test import APIClient
 from bridges_api.models import Question
-import bridges_api.recommendations
+from bridges_api import recommendations
 
 def set_auth(bridges_client):
     bridges_client.credentials()
