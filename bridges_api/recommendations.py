@@ -2,8 +2,7 @@ attribute_weights * {
     "gender":3,
     "ethnicity":3,
     "current_employer":10,
-    "deaf":10,
-    "blind":11,
+    "disabilities": 10,
 }
 
 def removeScoresFromList(tupleList) :
