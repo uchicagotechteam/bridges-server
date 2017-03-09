@@ -1,11 +1,11 @@
 from csv import DictReader
 
-def parseEmployerNames(file):
-    with file.open(mode='r') as csv:
+def parseData(file):
+    with open(file, mode='r') as csv:
         data = DictReader(csv)
         # Mapping from dictionary keys to column names:
         params = {
-            'wage' : 'Starting Wage', # NOTE: starting vs ending wage?
+            'wage' : 'Ending Wage', # NOTE: starting vs ending wage?
             'employer' : 'Employer Name',
             'position' : 'Position Title',
             'ethnicity' : 'Ethnicity',
@@ -18,23 +18,31 @@ def parseEmployerNames(file):
             'gender'
         }
         sets = {k : set() for k in keys}
-        avgs = {k : 0 for k in keys}
-        counts = {k : 0 for k in keys}
+        avgs = {k : {} for k in keys}
+        counts = {k : {} for k in keys}
 
         for row in data:
-            salary = rows[params['wage']]
-
             for key in sets.keys():
-                val = rows[params[key]]
+                val = row[params[key]]
                 sets[key].add(val)
 
-            for key in avgs.keys():
-                val = rows[params[key]]
-                avgs[key] += salary
-                count[key] += 1
+                if row[params['wage']] != "":
+                    try:
+                        salary = float(row[params['wage']])
+                    except ValueError:
+                        continue
+                    for key in avgs.keys():
+                        val = row[params[key]]
+                        if val in avgs[key].keys():
+                            avgs[key][val] += salary
+                            counts[key][val] += 1
+                        else:
+                            avgs[key][val] = salary
+                            counts[key][val] = 1
 
-        for key in params.keys():
-            if count[key] > 0:
-                avgs[key] /= count[key]
+        for k in counts.keys():
+            for l in counts[k].keys():
+                if counts[k][l] > 0:
+                    avgs[k][l] /= counts[k][l]
 
         return sets, avgs
