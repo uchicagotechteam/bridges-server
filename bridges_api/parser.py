@@ -1,7 +1,7 @@
 from csv import DictReader
 
-def parseData(file):
-    with open(file, mode='r') as csv:
+def parseEmployerNames(filename):
+    with open(filename, mode='r') as csv:
         data = DictReader(csv)
         # Mapping from dictionary keys to column names:
         params = {
@@ -46,3 +46,21 @@ def parseData(file):
                     avgs[k][l] /= counts[k][l]
 
         return sets, avgs
+
+def getBarriers(filename):
+    with open(filename, mode='r') as csv:
+        data = DictReader(csv)
+        barrierSet = set()
+        for row in data:
+            if row["Barrier"] != '':
+                barrierSet.add(row["Barrier"])
+    return barrierSet
+
+def getDisabilities(filename):
+    with open(filename, mode='r') as csv:
+        data = DictReader(csv)
+        disabilitySet = set()
+        for row in data:
+            if row["Disability"] != '':
+                disabilitySet.add(row["Disability"])
+    return disabilitySet
