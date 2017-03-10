@@ -25,7 +25,10 @@ SECRET_KEY = 'np&)l+u$v8d38&!4+aby3c)e9=9tlm4+x!@q+&wckku8y1_eq4'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+if os.environ.get('OPENSHIFT_REPO_DIR'):
+    ALLOWED_HOSTS = ["https://*"]
+else:
+    ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -89,8 +92,8 @@ if os.environ.get('OPENSHIFT_REPO_DIR'):
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'bridgesapi',
-        'USER': 'adminQSup1m6',
-        'PASSWORD':'VyzqateyyIub',
+        'USER': 'adminmtfSqg2',
+        'PASSWORD':'bBK_wmg76BC9',
         'HOST': os.environ['OPENSHIFT_MYSQL_DB_HOST'],
         'PORT': os.environ['OPENSHIFT_MYSQL_DB_PORT'],
         }

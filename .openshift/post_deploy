@@ -2,8 +2,14 @@ source ${OPENSHIFT_HOMEDIR}python-2.7/virtenv/bin/activate
 
 export PYTHON_EGG_CACHE=${OPENSHIFT_HOME_DIR}python-2.7/virtenv/lib/python-2.7/site-packages
 
-echo "Executing 'python ${OPENSHIFT_REPO_DIR}bridges_server/manage.py syncdb --noinput'"
+echo "Executing 'python ${OPENSHIFT_REPO_DIR}bridges_server/manage.py makemigrations --noinput'"
+python "$OPENSHIFT_REPO_DIR"manage.py makemigrations --noinput
+
+echo "Executing 'python ${OPENSHIFT_REPO_DIR}bridges_server/manage.py migrate --noinput'"
 python "$OPENSHIFT_REPO_DIR"manage.py migrate --noinput
 
-echo "Executing 'python ${OPENSHIFT_REPO_DIR}bridges_server/manage.py collectstatic --noinput -v0'"
+echo "Running tests"
+python "$OPENSHIFT_REPO_DIR"manage.py test --noinput -v0
+
+echo "Collecting staticfiles"
 python "$OPENSHIFT_REPO_DIR"manage.py collectstatic --noinput -v0
