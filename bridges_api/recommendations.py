@@ -1,4 +1,4 @@
-attribute_weights * {
+attribute_weights = {
     "gender":3,
     "ethnicity":3,
     "current_employer":10,
@@ -26,20 +26,16 @@ def insertQuestion(currentQTuple, sortedQuestionList):
         sortedQuestionList.insert(lo,currentQTuple)
         while len(sortedQuestionList)>20:
             sortedQuestionList.pop(0)
-    
+
 def recommend(userprofile, Question):
-    tuplelist = []
+    recommended_questions = []
     for question in Question.objects.all():
         questionscore = 0
         for tag in question.tags.all():
-            if tag.attribute in ["gender", "current_employer"]:
-                if getattr(userprofile, tag.attribute) == tag.value:
-                    questionscore += attribute_weights[tag.value]
-            else:
-                attlist = getattr(userprofile, tag.attribute).split(str = ",", 1)
-                if tag.value in attlist:
-                    questionscore += attribute_weights[tag.value]
+            attlist = getattr(userprofile, tag.attribute).split(",")
+            if tag.value in attlist:
+                questionscore += attribute_weights[tag.attribute]
         questiontuple = (question, questionscore)
         insertQuestion(questiontuple, recommended_questions)
-    questionslist = removeScoresFromList(tuplelist)
+    questionslist = removeScoresFromList(recommended_questions)
     return questionslist

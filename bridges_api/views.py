@@ -55,18 +55,20 @@ class QuestionList(generics.ListAPIView):
     serialized and returned to the User
     """
 
-    def get(self, request, *args, **kwargs):
+    queryset = Question.objects.all()
+    serializer_class = QuestionSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
         try:
-            profile = UserProfile.objects.get(user=request.user)
+            profile = UserProfile.objects.get(user=self.request.user)
         except UserProfile.DoesNotExist:
             profile = None
 
         if (profile):
-            recommendations.recommend(profile, Question)
-
-    queryset = Question.objects.all()
-    serializer_class = QuestionSerializer
-    permission_classes = (permissions.IsAuthenticated,)
+            return recommendations.recommend(profile, Question)
+        else:
+            return Question.objects.all()
 
 class QuestionDetail(generics.RetrieveUpdateDestroyAPIView):
     """
