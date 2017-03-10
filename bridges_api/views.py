@@ -1,14 +1,7 @@
-from bridges_api.models import Question, UserProfile, Employer, Tag
-from bridges_api.serializers import (
-    QuestionSerializer,
-    UserSerializer,
-    UserProfileSerializer,
-    TagSerializer,
-    EmployerSerializer
-)
-from bridges_api.permissions import MustBeSuperUserToGET
+import operator
 
 from django.contrib.auth.models import User
+from django.db.models import Q
 
 from rest_framework import generics
 from rest_framework import permissions
@@ -19,8 +12,16 @@ from rest_framework.reverse import reverse
 from rest_framework.parsers import JSONParser
 from rest_framework.authtoken.models import Token
 
+from bridges_api.models import Question, UserProfile, Employer, Tag
+from bridges_api.serializers import (
+    QuestionSerializer,
+    UserSerializer,
+    UserProfileSerializer,
+    TagSerializer,
+    EmployerSerializer
+)
+from bridges_api.permissions import MustBeSuperUserToGET
 from bridges_api import recommendations
-import operator
 
 def restrict_fields(query_dict, fields):
     """
