@@ -4,6 +4,7 @@ from rest_framework.test import APIRequestFactory
 from rest_framework.test import APITestCase
 from rest_framework.test import APIClient
 from bridges_api.models import Question
+from bridges_api import recommendations
 
 def set_auth(bridges_client):
     bridges_client.credentials()
@@ -94,3 +95,50 @@ class UserTests(APITestCase):
         response = self.bridges_client.get('/questions/')
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+class RecommendationsTests(APITestCase):
+    bridges_client = APIClient()
+
+    def test_insert(self):
+        out_of_order = [("question17",17),("question16",16),("question15",15),
+                        ("question17b",17),("question30",30),("question8",8),
+                        ("question7",7),("question6",6),("question29",29),
+                        ("question17c",17),("question28",28),("question4",4),
+                        ("question27",27),("question23",23),("question14",14),
+                        ("question22",22),("question21",21),("question18",18),
+                        ("question13",13),("question12",12),("question20",20),
+                        ("question19",19),("question11",11),("question10",10),
+                        ("question9",9),("question4",4),("question26",26),
+                        ("question25",25),("question24",24),("question14b",14),
+                        ("question5",5)]
+        in_order = [('question14',14),('question14b',14),('question15',15),
+                         ('question16',16),('question17',17),('question17b',17),
+                         ('question17c',17),('question18',18),('question19',19),
+                         ('question20',20),('question21',21),('question22',22),
+                         ('question23',23),('question24',24),('question25',25),
+                         ('question26',26),('question27',27),('question28',28),
+                         ('question29',29),('question30',30)]
+        test_order = []
+        for q in out_of_order :
+            recommendations.insertQuestion(q,test_order)
+
+        self.assertEqual(in_order,test_order)
+
+    def test_removescores(self):
+        in_order = [('question14',14),('question14b',14),('question15',15),
+                         ('question16',16),('question17',17),('question17b',17),
+                         ('question17c',17),('question18',18),('question19',19),
+                         ('question20',20),('question21',21),('question22',22),
+                         ('question23',23),('question24',24),('question25',25),
+                         ('question26',26),('question27',27),('question28',28),
+                         ('question29',29),('question30',30)]
+
+        in_order_just_questions = ['question30','question29','question28',
+                        'question27','question26','question25','question24',
+                        'question23','question22','question21','question20',
+                        'question19','question18','question17c','question17b',
+                        'question17','question16','question15','question14b',
+                        'question14']
+        remove_score_list = recommendations.removeScoresFromList(in_order)
+
+        self.assertEqual(in_order_just_questions,remove_score_list)

@@ -19,6 +19,8 @@ from rest_framework.reverse import reverse
 from rest_framework.parsers import JSONParser
 from rest_framework.authtoken.models import Token
 
+from bridges_api import recommendations
+
 def restrict_fields(query_dict, fields):
     """
     Filters the fields in a query_dict based on a list
@@ -33,7 +35,10 @@ def restrict_fields(query_dict, fields):
 @api_view(['GET'])
 def api_root(request, format=None):
     """
-    This is the main page of the API for the Bridges to Work Virtual Mentor.
+    This is the main page of the API for the Bridges from School to Work virtual\
+    mentor.
+    The API provides access to questions, employers, and users.
+    It can also recommend questions based on a user's profile.
     """
     return Response({
         'users': reverse('user-list', request=request, format=format),
@@ -49,9 +54,21 @@ class QuestionList(generics.ListAPIView):
     variable is the list of Question Models that ultimately gets
     serialized and returned to the User
     """
+
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
     permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        try:
+            profile = UserProfile.objects.get(user=self.request.user)
+        except UserProfile.DoesNotExist:
+            profile = None
+
+        if (profile):
+            return recommendations.recommend(profile, Question)
+        else:
+            return Question.objects.all()
 
 class QuestionDetail(generics.RetrieveUpdateDestroyAPIView):
     """
