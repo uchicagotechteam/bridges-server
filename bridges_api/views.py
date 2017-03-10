@@ -67,14 +67,14 @@ class QuestionList(generics.ListAPIView):
         # searching takes precendence over recommending
         if (search_term and self.request.method == 'GET'):
             search_terms = search_term.split()
+            print search_terms
             queryset = list(Question.objects.filter(
                 reduce(operator.and_, (Q(answer__contains = term) for term in search_terms)) |
                 reduce(operator.and_, (Q(title__contains = term) for term in search_terms)) |
                 reduce(operator.and_, (Q(description__contains = term) for term in search_terms))
             ))
 
-            if (queryset):
-                return queryset
+            return queryset
 
         # If we're not searching, send back some recommendations
         try:
