@@ -26,7 +26,7 @@ SECRET_KEY = 'np&)l+u$v8d38&!4+aby3c)e9=9tlm4+x!@q+&wckku8y1_eq4'
 DEBUG = True
 
 if os.environ.get('OPENSHIFT_REPO_DIR'):
-    ALLOWED_HOSTS = ["https://*"]
+    ALLOWED_HOSTS = ["bridgesapi-skypath.rhcloud.com"]
 else:
     ALLOWED_HOSTS = ["*"]
 
