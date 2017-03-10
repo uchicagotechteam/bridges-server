@@ -20,6 +20,7 @@ from rest_framework.parsers import JSONParser
 from rest_framework.authtoken.models import Token
 
 from bridges_api import recommendations
+import operator
 
 def restrict_fields(query_dict, fields):
     """
@@ -60,6 +61,21 @@ class QuestionList(generics.ListAPIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
+        search_term = self.request.query_params.get('search')
+
+        # searching takes precendence over recommending
+        if (search_term and self.request.method == 'GET'):
+            search_terms = search_term.split()
+            queryset = list(Question.objects.filter(
+                reduce(operator.and_, (Q(answer__contains = term) for term in search_terms)) |
+                reduce(operator.and_, (Q(title__contains = term) for term in search_terms)) |
+                reduce(operator.and_, (Q(description__contains = term) for term in search_terms))
+            ))
+
+            if (queryset):
+                return queryset
+
+        # If we're not searching, send back some recommendations
         try:
             profile = UserProfile.objects.get(user=self.request.user)
         except UserProfile.DoesNotExist:
