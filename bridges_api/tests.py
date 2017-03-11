@@ -97,21 +97,20 @@ class QuestionTests(APITestCase):
 
         response = self.bridges_client.get('/questions/', {'search': 'wood'})
         returned_questions = response.json()['results']
-        self.assertEqual(len(returned_questions), 1, "incorrect amount of results")
+        self.assertEqual(len(returned_questions), 1)
         self.assertEqual(returned_questions[0].get('title'), test_title2)
 
-        response = self.bridges_client.get('/questions/', {'search': 'wood chuck'})
+        response = self.bridges_client.get('/questions/', {'search': 'the'})
         returned_questions = response.json()['results']
-        self.assertEqual(len(returned_questions), 1, "incorrect amount of results")
-        self.assertEqual(returned_questions[0].get('title'), test_title2)
+        self.assertEqual(len(returned_questions), 2)
 
-        response = self.bridges_client.get('/questions/', {'search': 'muffin wood'})
+        response = self.bridges_client.get('/questions/', {'search': 'Where does the muffin'})
         returned_questions = response.json()['results']
-        self.assertEqual(len(returned_questions), 2, "incorrect amount of results")
+        self.assertEqual(len(returned_questions), 1)
 
         response = self.bridges_client.get('/questions/', {'search': 'Bkk'})
         returned_questions = response.json()['results']
-        self.assertEqual(len(returned_questions), 0, "incorrect amount of results")
+        self.assertEqual(len(returned_questions), 0)
 
 class UserTests(APITestCase):
     bridges_client = APIClient()
