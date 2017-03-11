@@ -69,9 +69,9 @@ class QuestionList(generics.ListAPIView):
             search_terms = search_term.split()
             print search_terms
             queryset = list(Question.objects.filter(
-                reduce(operator.and_, (Q(answer__contains = term) for term in search_terms)) |
-                reduce(operator.and_, (Q(title__contains = term) for term in search_terms)) |
-                reduce(operator.and_, (Q(description__contains = term) for term in search_terms))
+                reduce(operator.or_, (Q(answer__icontains = term) for term in search_terms)) |
+                reduce(operator.or_, (Q(title__icontains = term) for term in search_terms)) |
+                reduce(operator.or_, (Q(description__icontains = term) for term in search_terms))
             ))
 
             return queryset
