@@ -22,13 +22,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'np&)l+u$v8d38&!4+aby3c)e9=9tlm4+x!@q+&wckku8y1_eq4'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
 if os.environ.get('OPENSHIFT_REPO_DIR'):
+    # Don't want to run debug mode in prod
     ALLOWED_HOSTS = ["bridgesapi-skypath.rhcloud.com"]
+    DEBUG = False
 else:
     ALLOWED_HOSTS = ["*"]
+    DEBUG = True
 
 
 # Application definition

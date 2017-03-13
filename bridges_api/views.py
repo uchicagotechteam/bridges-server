@@ -20,7 +20,9 @@ from bridges_api.serializers import (
     TagSerializer,
     EmployerSerializer
 )
-from bridges_api.permissions import MustBeSuperUserToGET
+
+from permissions import MustBeSuperUserToGET, IsOwnerOrCreateOnly
+
 from bridges_api import recommendations
 
 def restrict_fields(query_dict, fields):
@@ -59,7 +61,7 @@ class QuestionList(generics.ListAPIView):
 
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (MustBeSuperUserToGET,)
 
     def get_queryset(self):
         search_term = self.request.query_params.get('search')
@@ -105,12 +107,11 @@ class UserList(generics.ListCreateAPIView):
         email address, birth date formatted as YYYY-MM-DD, disabilities, and gender
         """
         user_fields = UserSerializer().fields.keys()
-        profile_fields = UserProfileSerializer().fields.keys()
-
         user_data = restrict_fields(request.data, user_fields)
-        profile_data = restrict_fields(request.data, profile_fields)
-
         user_serializer = UserSerializer(data=user_data)
+
+        profile_fields = UserProfileSerializer().fields.keys()
+        profile_data = restrict_fields(request.data, profile_fields)
         profile_serializer = UserProfileSerializer(data=profile_data)
 
         if user_serializer.is_valid():
@@ -138,7 +139,23 @@ class UserList(generics.ListCreateAPIView):
 class UserDetail(generics.RetrieveAPIView):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
-    permissions = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated, IsOwnerOrCreateOnly)
+
+    def get(self, request, *args, **kwargs):
+        """
+        If you have your token, and you are the person hitting /user-info/,
+        then you'll receive your own info.
+        """
+        try:
+            requested_profile = UserProfile.objects.get(user=request.user)
+        except:
+            return Response({
+                'errors': 'There is no profile corresponding to those credentials'
+            }, status=status.HTTP_404_NOT_FOUND)
+
+        self.check_object_permissions(request, requested_profile)
+        serialized_profile = UserProfileSerializer(requested_profile)
+        return Response(serialized_profile.data)
 
 class TagList(generics.ListAPIView):
     queryset = Tag.objects.all()
