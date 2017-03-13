@@ -46,6 +46,7 @@ def api_root(request, format=None):
     """
     return Response({
         'users': reverse('user-list', request=request, format=format),
+        'user-info': reverse('user-info', request=request, format=format),
         'questions': reverse('question-list', request=request, format=format),
         'employers': reverse('employer-list', request=request, format=format),
         'tags': reverse('tag-list', request=request, format=format)
@@ -61,7 +62,7 @@ class QuestionList(generics.ListAPIView):
 
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
-    permission_classes = (MustBeSuperUserToGET,)
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
         search_term = self.request.query_params.get('search')

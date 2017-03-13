@@ -51,6 +51,7 @@ class QuestionTests(APITestCase):
         saved_question = Question.objects.get()
 
         response = self.bridges_client.get('/questions/')
+
         returned_question = response.json()['results'][0]
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -121,7 +122,6 @@ class UserTests(APITestCase):
         access pages that require permissions.
         """
         response = self.bridges_client.get('/questions/')
-
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
         set_auth(self.bridges_client)
@@ -134,6 +134,41 @@ class UserTests(APITestCase):
         response = self.bridges_client.get('/questions/')
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_user_info(self):
+        """
+        Ensure that /user-info/ endpoint returns the proper user when queried
+        """
+        response = self.bridges_client.get('/user-info/')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        set_auth(self.bridges_client)
+        response = self.bridges_client.get('/user-info/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        results = response.json()
+        self.assertEqual(results.get('username'), 'testUser123')
+        self.assertEqual(results.get('gender'), 'male')
+
+        data = {
+            "username": "testUser345",
+            "password": "testPassword",
+            "date_of_birth": "2014-01-01",
+            "gender": "male",
+            "ethnicity": "n/a",
+            "disabilities": "n/a",
+            "current_employer": "n/a",
+            "first_name": "test",
+            "last_name": "user",
+            "email": "test2@user.mail"
+        }
+
+        response = self.bridges_client.post('/users/', data, format='json')
+
+        # If we try another token, we should get the info for that user
+        self.bridges_client.credentials(HTTP_AUTHORIZATION='Token ' + response.json()['token'])
+        response = self.bridges_client.get('/user-info/')
+        results = response.json()
+        self.assertEqual(results['username'], 'testUser345')
 
 class RecommendationsTests(APITestCase):
     bridges_client = APIClient()
