@@ -19,12 +19,11 @@ class UserProfile(models.Model):
     last_name = models.CharField(max_length=255)
     email = models.EmailField()
     date_of_birth = models.DateField(null=True, blank=True)
-    # All the following fields should be chosen from a list of valid inputs
-    # on the backend and frontend. In this example they're just comma separated
-    # strings
     gender = models.CharField(max_length=255)
     disabilities = models.CharField(max_length=255)
     ethnicity = models.CharField(max_length=255, blank=True)
+    profile_picture = models.ImageField(null=True, blank=True)
+    position = models.CharField(max_length=255, blank=True)
     current_employer = models.CharField(default="Unemployed", max_length=255, blank=True)
 
     @property
@@ -63,7 +62,7 @@ class Tag(models.Model):
     def __unicode__(self):
         return u'%s' % (self.value)
 
-    def clean(self): 
+    def clean(self):
     	self.slug = slugify((self.attribute + self.value).replace(' ', ''))
         if (len(type(self).objects.filter(slug=self.slug)) != 0):
             raise ValidationError("Tag is not unique")

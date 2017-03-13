@@ -3,23 +3,26 @@ from rest_framework import status
 from rest_framework.test import APIRequestFactory
 from rest_framework.test import APITestCase
 from rest_framework.test import APIClient
-from bridges_api.models import Question
+from bridges_api.models import Question, UserProfile
 from bridges_api import recommendations
 
-def set_auth(bridges_client):
+from django.contrib.auth.models import User
+
+example_user_data = {
+    "username": "testUser123",
+    "password": "testPassword",
+    "date_of_birth": "2014-01-01",
+    "gender": "male",
+    "ethnicity": "n/a",
+    "disabilities": "n/a",
+    "current_employer": "n/a",
+    "first_name": "test",
+    "last_name": "user",
+    "email": "test@user.mail"
+}
+
+def set_auth(bridges_client, data=example_user_data):
     bridges_client.credentials()
-    data = {
-        "username": "testUser123",
-        "password": "testPassword",
-        "date_of_birth": "2014-01-01",
-        "gender": "male",
-        "ethnicity": "n/a",
-        "disabilities": "n/a",
-        "current_employer": "n/a",
-        "first_name": "test",
-        "last_name": "user",
-        "email": "test@user.mail"
-    }
     response = bridges_client.post('/users/', data, format='json')
     if response.status_code != status.HTTP_201_CREATED: # User already exists
         data = {
@@ -169,6 +172,29 @@ class UserTests(APITestCase):
         response = self.bridges_client.get('/user-info/')
         results = response.json()
         self.assertEqual(results['username'], 'testUser345')
+
+    def test_create_new_user(self):
+        data = {
+            "username": "testUser111",
+            "password": "testPassword",
+            "date_of_birth": "2014-01-01",
+            "gender": "male",
+            "ethnicity": "n/a",
+            "disabilities": "n/a",
+            "current_employer": "n/a",
+            "first_name": "Stefan",
+            "last_name": "Lance",
+            "email": "test2@user.mail"
+        }
+
+        response = self.bridges_client.post('/users/', data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        user_obj = User.objects.get(username="testUser111")
+        profile = UserProfile.objects.get(user=user_obj)
+
+        self.assertEqual(profile.first_name, 'Stefan')
+        self.assertEqual(profile.last_name, 'Lance')
 
 class RecommendationsTests(APITestCase):
     bridges_client = APIClient()
