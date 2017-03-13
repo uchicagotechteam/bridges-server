@@ -9,6 +9,8 @@ from rest_framework.authtoken.models import Token
 from django.utils.text import slugify
 from django.core.exceptions import ValidationError
 
+gender_options = (('male', 'Male'), ('female', 'Female'))
+
 class UserProfile(models.Model):
     """
     Extends the native Django user model
@@ -18,8 +20,9 @@ class UserProfile(models.Model):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     email = models.EmailField()
+
     date_of_birth = models.DateField(null=True, blank=True)
-    gender = models.CharField(max_length=255)
+    gender = models.CharField(max_length=255, choices=gender_options)
     disabilities = models.CharField(max_length=255)
     ethnicity = models.CharField(max_length=255, blank=True)
     profile_picture = models.ImageField(null=True, blank=True)

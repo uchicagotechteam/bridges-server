@@ -54,10 +54,10 @@ class QuestionTests(APITestCase):
         saved_question = Question.objects.get()
 
         response = self.bridges_client.get('/questions/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         returned_question = response.json()['results'][0]
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(returned_question['title'], saved_question.title)
         self.assertEqual(returned_question['description'], saved_question.description)
         self.assertEqual(returned_question['answer'], saved_question.answer)
