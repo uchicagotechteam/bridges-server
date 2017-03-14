@@ -143,5 +143,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 if os.environ.get('OPENSHIFT_REPO_DIR'):
     STATIC_ROOT = '/var/lib/openshift/588fc6a62d52718caf0001c7/app-root/runtime'
+    MEDIA_URL = '/var/lib/openshift/588fc6a62d52718caf0001c7/app-root/runtime/static/media/'
+else:
+    STATIC_ROOT = os.path.join(os.path.dirname(__file__), 'static')
+    MEDIA_URL = '/static/media/'
 
 STATIC_URL = '/static/'
