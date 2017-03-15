@@ -51,7 +51,7 @@ class UserProfile(models.Model):
     ethnicity = models.CharField(max_length=255, blank=True)
     position = models.CharField(max_length=255, blank=True)
     current_employer = models.CharField(max_length=255, blank=True)
-    bookmarks = models.ManyToManyField(Question, blank=True, null=True)
+    bookmarks = models.ManyToManyField(Question)
 
     @property
     def full_name(self):
