@@ -44,8 +44,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
         model = UserProfile
         fields = ('username', 'date_of_birth', 'gender',
                   'ethnicity', 'disabilities', 'current_employer',
-                  'profile_picture', 'position', 'first_name',
-                  'last_name', 'email', 'user_id', 'bookmarks')
+                  'position', 'first_name', 'last_name',
+                  'email', 'user_id', 'bookmarks')
 
 class EmployerSerializer(serializers.ModelSerializer):
     class Meta:

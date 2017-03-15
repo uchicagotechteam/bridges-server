@@ -49,7 +49,6 @@ class UserProfile(models.Model):
     gender = models.CharField(max_length=255, choices=gender_options)
     disabilities = models.CharField(max_length=255)
     ethnicity = models.CharField(max_length=255, blank=True)
-    profile_picture = models.ImageField(upload_to='static/media', null=True, blank=True)
     position = models.CharField(max_length=255, blank=True)
     current_employer = models.CharField(max_length=255, blank=True)
     bookmarks = models.ManyToManyField(Question, blank=True, null=True)
