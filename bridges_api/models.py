@@ -11,6 +11,30 @@ from django.core.exceptions import ValidationError
 
 gender_options = (('male', 'Male'), ('female', 'Female'))
 
+class Tag(models.Model):
+    slug = models.CharField(max_length=50, unique=True)
+    attribute = models.CharField(max_length=100)
+    value = models.CharField(max_length=100)
+
+    def __unicode__(self):
+        return u'%s' % (self.value)
+
+    def clean(self):
+        self.slug = slugify((self.attribute + self.value).replace(' ', ''))
+        if (len(type(self).objects.filter(slug=self.slug)) != 0):
+            raise ValidationError("Tag is not unique")
+        return self
+
+class Question(models.Model):
+    title = models.CharField(max_length=300)
+    description = models.TextField(blank=True)
+    answer = models.TextField(blank=True)
+    tags = models.ManyToManyField(Tag)
+    number_of_views = models.IntegerField(default=0)
+
+    def __unicode__(self):
+        return u'%s' % (self.title)
+
 class UserProfile(models.Model):
     """
     Extends the native Django user model
@@ -27,7 +51,8 @@ class UserProfile(models.Model):
     ethnicity = models.CharField(max_length=255, blank=True)
     profile_picture = models.ImageField(upload_to='static/media', null=True, blank=True)
     position = models.CharField(max_length=255, blank=True)
-    current_employer = models.CharField(default="Unemployed", max_length=255, blank=True)
+    current_employer = models.CharField(max_length=255, blank=True)
+    bookmarks = models.ManyToManyField(Question, blank=True, null=True)
 
     @property
     def full_name(self):
@@ -56,30 +81,6 @@ def save_user_profile(sender, instance, **kwargs):
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
-
-class Tag(models.Model):
-    slug = models.CharField(max_length=50, unique=True)
-    attribute = models.CharField(max_length=100)
-    value = models.CharField(max_length=100)
-
-    def __unicode__(self):
-        return u'%s' % (self.value)
-
-    def clean(self):
-    	self.slug = slugify((self.attribute + self.value).replace(' ', ''))
-        if (len(type(self).objects.filter(slug=self.slug)) != 0):
-            raise ValidationError("Tag is not unique")
-        return self
-
-class Question(models.Model):
-    title = models.CharField(max_length=300)
-    description = models.TextField(blank=True)
-    answer = models.TextField(blank=True)
-    tags = models.ManyToManyField(Tag)
-    number_of_views = models.IntegerField(default=0)
-
-    def __unicode__(self):
-        return u'%s' % (self.title)
 
 class Employer(models.Model):
     name = models.CharField(max_length=255)
