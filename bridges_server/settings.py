@@ -26,7 +26,7 @@ if os.environ.get('OPENSHIFT_REPO_DIR'):
     # Don't want to run debug mode in prod
     MEDIA_URL = '/static/media/'
     ALLOWED_HOSTS = ["bridgesapi-skypath.rhcloud.com"]
-    DEBUG = False
+    DEBUG = True
 else:
     MEDIA_URL = '/static/media/'
     ALLOWED_HOSTS = ["*"]
