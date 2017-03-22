@@ -4,13 +4,15 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 
 from rest_framework import generics
-from rest_framework import permissions
+from rest_framework import permissions, authentication
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.parsers import JSONParser
+from rest_framework.renderers import JSONRenderer
 from rest_framework.authtoken.models import Token
+from rest_framework.views import APIView
 
 from bridges_api.models import Question, UserProfile, Employer, Tag
 from bridges_api.serializers import (
@@ -47,6 +49,7 @@ def api_root(request, format=None):
     return Response({
         'users': reverse('user-list', request=request, format=format),
         'user-info': reverse('user-info', request=request, format=format),
+        'bookmarks': reverse('bookmarks', request=request, format=format),
         'questions': reverse('question-list', request=request, format=format),
         'employers': reverse('employer-list', request=request, format=format),
         'tags': reverse('tag-list', request=request, format=format)
@@ -157,6 +160,53 @@ class UserDetail(generics.RetrieveAPIView):
         self.check_object_permissions(request, requested_profile)
         serialized_profile = UserProfileSerializer(requested_profile)
         return Response(serialized_profile.data)
+
+class BookmarksManager(APIView):
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request, format=None):
+        """
+        Get the bookmarks associated with the user who is querying
+        """
+        profile = UserProfile.objects.get(user=request.user)
+        serialized_bookmarks = QuestionSerializer(profile.bookmarks.all(), many=True)
+        return Response({
+            'bookmarks': JSONRenderer().render(serialized_bookmarks.data)
+        }, status=status.HTTP_200_OK)
+
+    def post(self, request, format=None):
+        """
+        Set the bookmarks on the user who is querying based on question ids
+        If any of the question ids are invalid, raise an error and add none
+        """
+        profile = UserProfile.objects.get(user=request.user)
+        bookmark_ids = request.data.get('bookmarks')
+
+        # If we really post an empty list, clear bookmarks
+        if (bookmark_ids == []):
+            profile.bookmarks.clear()
+        # If we're not posting an empty list
+        # we only clear the bookmarks if the request succeeds
+        elif (bookmark_ids):
+            try:
+                requested_bookmarks = Question.objects.filter(id__in=bookmark_ids)
+                if len(requested_bookmarks) > 0:
+                    profile.bookmarks.clear()
+                    profile.bookmarks.add(*requested_bookmarks)
+                    profile.save()
+                    return Response({
+                        'response': 'bookmarks set successfully'
+                    }, status=status.HTTP_200_OK)
+            except:
+                return Response({
+                    'error': 'One or more of the question ids does not exist'
+                }, status=status.HTTP_404_NOT_FOUND)
+
+        return Response({
+            'error': 'Must include bookmarks field on request\
+            with desired bookmarks to set'
+        }, status=status.HTTP_400_BAD_REQUEST)
 
 class TagList(generics.ListAPIView):
     queryset = Tag.objects.all()

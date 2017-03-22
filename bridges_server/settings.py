@@ -24,13 +24,11 @@ SECRET_KEY = 'np&)l+u$v8d38&!4+aby3c)e9=9tlm4+x!@q+&wckku8y1_eq4'
 
 if os.environ.get('OPENSHIFT_REPO_DIR'):
     # Don't want to run debug mode in prod
-    MEDIA_URL = '/static/media/'
+    DEBUG = False
     ALLOWED_HOSTS = ["bridgesapi-skypath.rhcloud.com"]
-    DEBUG = True
 else:
-    MEDIA_URL = '/static/media/'
-    ALLOWED_HOSTS = ["*"]
     DEBUG = True
+    ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -54,6 +52,11 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ),
 }
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+    '/var/www/static/',
+]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -143,11 +146,6 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
-if os.environ.get('OPENSHIFT_REPO_DIR'):
-    STATIC_ROOT = '/var/lib/openshift/588fc6a62d52718caf0001c7/app-root/runtime'
-    MEDIA_URL = '/var/lib/openshift/588fc6a62d52718caf0001c7/app-root/runtime/static/media/'
-else:
-    STATIC_ROOT = os.path.join(os.path.dirname(__file__), 'static')
-    MEDIA_URL = '/static/media/'
 
+STATIC_ROOT = os.path.join(os.path.dirname(__file__), 'static')
 STATIC_URL = '/static/'

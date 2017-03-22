@@ -29,7 +29,7 @@ class Question(models.Model):
     title = models.CharField(max_length=300)
     description = models.TextField(blank=True)
     answer = models.TextField(blank=True)
-    tags = models.ManyToManyField(Tag)
+    tags = models.ManyToManyField(Tag, null=True)
     number_of_views = models.IntegerField(default=0)
 
     def __unicode__(self):

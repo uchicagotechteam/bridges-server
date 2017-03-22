@@ -241,4 +241,47 @@ class RecommendationsTests(APITestCase):
                         'question14']
         remove_score_list = recommendations.removeScoresFromList(in_order)
 
-        self.assertEqual(in_order_just_questions,remove_score_list)
+        self.assertEqual(in_order_just_questions, remove_score_list)
+
+class BookmarkTests(APITestCase):
+    bridges_client = APIClient()
+
+    def test_set_bookmarks(self):
+        set_auth(self.bridges_client)
+
+        # Should override bookmarks on server w/ question ids
+        data = {
+            'bookmarks': [1, 2, 3, 4, 5]
+        }
+
+        response = self.bridges_client.post('/bookmarks/', data, format='json')
+
+        # If the question ids are invalid, we should let the client know
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        question_data = [{'id': x, 'title': 'title' + str(x)} for x in range(1, 6)]
+        for question in question_data:
+            Question.objects.create(id=question['id'], title=question['title'])
+
+        response = self.bridges_client.post('/bookmarks/', data, format='json')
+
+        # If there are questions with the given ids, we're all good
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+    def test_get_bookmarks(self):
+        set_auth(self.bridges_client)
+
+        question_data = [{'id': x, 'title': 'title' + str(x)} for x in range(1, 6)]
+        for question in question_data:
+            Question.objects.create(id=question['id'], title=question['title'])
+
+        profile = UserProfile.objects.get(user=User.objects.get(username='testUser123'))
+        questions = Question.objects.filter(id__in=range(0, 6))
+
+        for question in questions:
+            profile.bookmarks.add(question)
+
+        response = self.bridges_client.get('/bookmarks/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # Response should contain the questions associated with that user's bookmarks
