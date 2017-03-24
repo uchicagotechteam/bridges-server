@@ -9,8 +9,8 @@ python "$OPENSHIFT_REPO_DIR"manage.py makemigrations --noinput
 echo "Executing 'python ${OPENSHIFT_REPO_DIR}bridges_server/manage.py migrate --noinput'"
 python "$OPENSHIFT_REPO_DIR"manage.py migrate --noinput
 
-echo "Running tests"
-python "$OPENSHIFT_REPO_DIR"manage.py test --noinput -v0
+echo "Executing 'python ${OPENSHIFT_REPO_DIR}bridges_server/manage.py test --noinput -v0'"
+python "$OPENSHIFT_REPO_DIR"bridges_server/manage.py test --noinput -v0
 
 echo "Collecting staticfiles"
 python "$OPENSHIFT_REPO_DIR"manage.py collectstatic --noinput -v0
