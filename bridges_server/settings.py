@@ -24,7 +24,7 @@ SECRET_KEY = 'np&)l+u$v8d38&!4+aby3c)e9=9tlm4+x!@q+&wckku8y1_eq4'
 
 if os.environ.get('OPENSHIFT_REPO_DIR'):
     # Don't want to run debug mode in prod
-    DEBUG = False
+    DEBUG = True
     ALLOWED_HOSTS = ["bridgesapi-skypath.rhcloud.com"]
 else:
     DEBUG = True
