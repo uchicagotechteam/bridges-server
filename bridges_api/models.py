@@ -10,10 +10,13 @@ from django.utils.text import slugify
 from django.core.exceptions import ValidationError
 
 gender_options = (('male', 'Male'), ('female', 'Female'))
+profile_attributes = (
+    ('gender', 'Gender'), ('ethnicity', 'Ethnicity'), ('position', 'Position'),
+    ('current_employer', 'Current Employer'))
 
 class Tag(models.Model):
     slug = models.CharField(max_length=50, unique=True)
-    attribute = models.CharField(max_length=100)
+    attribute = models.CharField(max_length=100, choices=profile_attributes)
     value = models.CharField(max_length=100)
 
     def __unicode__(self):
@@ -29,7 +32,7 @@ class Question(models.Model):
     title = models.CharField(max_length=300)
     description = models.TextField(blank=True)
     answer = models.TextField(blank=True)
-    tags = models.ManyToManyField(Tag, null=True)
+    tags = models.ManyToManyField(Tag, blank=True)
     number_of_views = models.IntegerField(default=0)
 
     def __unicode__(self):
