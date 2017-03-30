@@ -268,6 +268,17 @@ class BookmarkTests(APITestCase):
         # If there are questions with the given ids, we're all good
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+        # Clear the bookmarks
+        data = {
+            'bookmarks': []
+        }
+
+        #
+        response = self.bridges_client.post('/bookmarks/', data, format='json')
+
+        # We should get a 200 and a 'cleared' message
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()['response'], 'bookmarks cleared successfully')
 
     def test_get_bookmarks(self):
         set_auth(self.bridges_client)

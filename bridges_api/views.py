@@ -186,6 +186,10 @@ class BookmarksManager(APIView):
         # If we really post an empty list, clear bookmarks
         if (bookmark_ids == []):
             profile.bookmarks.clear()
+            return Response({
+                'response': 'bookmarks cleared successfully'
+            })
+
         # If we're not posting an empty list
         # we only clear the bookmarks if the request succeeds
         elif (bookmark_ids):
