@@ -273,7 +273,6 @@ class BookmarkTests(APITestCase):
             'bookmarks': []
         }
 
-        #
         response = self.bridges_client.post('/bookmarks/', data, format='json')
 
         # We should get a 200 and a 'cleared' message
