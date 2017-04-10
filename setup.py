@@ -6,5 +6,5 @@ setup(name='Bridges API',
       author='TechTeam',
       author_email='uchicagotechteam@gmail.com',
       url='https://github.com/uchicagotechteam',
-      install_requires=['Django>=1.10', 'djangoresetframework==3.5.3', 'Pillow==4.0.0'],
+      install_requires=['Django>=1.10', 'djangorestframework==3.5.3', 'Pillow==4.0.0'],
      )
