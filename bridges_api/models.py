@@ -55,7 +55,7 @@ class UserProfile(models.Model):
     position = models.CharField(max_length=255, blank=True)
     current_employer = models.CharField(max_length=255, blank=True)
     bookmarks = models.ManyToManyField(Question)
-    profile_picture = models.ImageField(upload_to='profile_pictures/', default='')
+    profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True)
 
     @property
     def full_name(self):
