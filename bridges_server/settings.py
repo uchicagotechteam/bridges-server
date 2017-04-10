@@ -152,5 +152,5 @@ else:
     STATIC_ROOT = os.path.join(os.path.dirname(__file__), 'static')
     MEDIA_ROOT = os.path.join(os.path.dirname(__file__), 'media')
 
-MEDIA_URL = '/media/'
 STATIC_URL = '/static/'
+MEDIA_URL = STATIC_URL + 'media/'
