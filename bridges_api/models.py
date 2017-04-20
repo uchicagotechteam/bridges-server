@@ -56,7 +56,7 @@ class UserProfile(models.Model):
     ethnicity = models.CharField(max_length=255, blank=True)
     position = models.CharField(max_length=255, blank=True)
     current_employer = models.CharField(max_length=255, blank=True)
-    bookmarks = models.ManyToManyField(Question)
+    bookmarks = models.ManyToManyField(Question, blank=True)
     profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True)
 
     @property
