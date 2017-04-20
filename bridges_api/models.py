@@ -56,14 +56,15 @@ class UserProfile(models.Model):
     ethnicity = models.CharField(max_length=255, blank=True)
     position = models.CharField(max_length=255, blank=True)
     current_employer = models.CharField(max_length=255, blank=True)
+    bookmarks = models.ManyToManyField(Question)
     profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True)
-
-    def __unicode__(self):
-        return self.full_name
 
     @property
     def full_name(self):
         return "%s %s" % (self.first_name, self.last_name)
+
+    def __unicode__(self):
+        return self.full_name
 
     def save(self, *args, **kwargs):
        self.pk = self.user.pk

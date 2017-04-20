@@ -51,7 +51,7 @@ class QuestionTests(APITestCase):
 
         Question.objects.create(title=test_title, description=test_description,
         answer=test_answer, number_of_views=test_num_views,
-        owner=User.objects.get(username="testUser123"))
+        owner=UserProfile.objects.get(user=User.objects.get(username="testUser123")))
         saved_question = Question.objects.get()
 
         response = self.bridges_client.get('/questions/')
@@ -89,7 +89,7 @@ class QuestionTests(APITestCase):
         test_answer = 'The muffin man lives on cherry lane'
         test_num_views = 1025
 
-        owner = User.objects.get(username='testUser123')
+        owner = UserProfile.objects.get(user=User.objects.get(username='testUser123'))
 
         Question.objects.create(title=test_title, description=test_description,
         answer=test_answer, number_of_views=test_num_views, owner=owner)
@@ -98,7 +98,7 @@ class QuestionTests(APITestCase):
         test_description2 = "Woodchucks are indigenous to the swamp"
         test_answer2 = "A lot of wood"
 
-        owner = User.objects.get(username='testUser123')
+        owner = UserProfile.objects.get(user=User.objects.get(username='testUser123'))
 
         Question.objects.create(title=test_title2, description=test_description2,
         answer=test_answer2, number_of_views=test_num_views, owner=owner)
@@ -263,7 +263,7 @@ class BookmarkTests(APITestCase):
         # If the question ids are invalid, we should let the client know
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-        owner = User.objects.get(username='testUser123')
+        owner = UserProfile.objects.get(user=User.objects.get(username='testUser123'))
 
         question_data = [{'id': x, 'title': 'title' + str(x)} for x in range(1, 6)]
         for question in question_data:
@@ -289,7 +289,7 @@ class BookmarkTests(APITestCase):
         set_auth(self.bridges_client)
 
         question_data = [{'id': x, 'title': 'title' + str(x)} for x in range(1, 6)]
-        owner = User.objects.get(username='testUser123')
+        owner = UserProfile.objects.get(user=User.objects.get(username='testUser123'))
 
         for question in question_data:
             Question.objects.create(id=question['id'], title=question['title'], owner=owner)
