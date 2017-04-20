@@ -7,12 +7,24 @@ class TagSerializer(serializers.ModelSerializer):
         model = Tag
         fields = ('attribute', 'value')
 
+class UserProfileSerializer(serializers.ModelSerializer):
+    username = serializers.ReadOnlyField(source='user.username')
+    user_id = serializers.ReadOnlyField(source='pk')
+
+    class Meta:
+        model = UserProfile
+        fields = ('username', 'date_of_birth', 'gender',
+                  'ethnicity', 'disabilities', 'current_employer',
+                  'position', 'first_name', 'last_name',
+                  'email', 'user_id', 'profile_picture')
+
 class QuestionSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True)
+    owner = UserProfileSerializer()
     class Meta:
         model = Question
         fields = ('id', 'title', 'description', 'answer',
-                  'tags', 'number_of_views')
+                  'tags', 'number_of_views', 'owner')
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -35,17 +47,6 @@ class UserSerializer(serializers.ModelSerializer):
                 setattr(instance, attr, value)
         instance.save()
         return instance
-
-class UserProfileSerializer(serializers.ModelSerializer):
-    username = serializers.ReadOnlyField(source='user.username')
-    user_id = serializers.ReadOnlyField(source='pk')
-
-    class Meta:
-        model = UserProfile
-        fields = ('username', 'date_of_birth', 'gender',
-                  'ethnicity', 'disabilities', 'current_employer',
-                  'position', 'first_name', 'last_name',
-                  'email', 'user_id', 'profile_picture')
 
 class EmployerSerializer(serializers.ModelSerializer):
     class Meta:

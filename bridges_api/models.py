@@ -30,6 +30,8 @@ class Tag(models.Model):
 
 class Question(models.Model):
     title = models.CharField(max_length=300)
+    owner = models.ForeignKey('UserProfile', related_name='userprofile',
+    on_delete=models.CASCADE)
     description = models.TextField(blank=True)
     answer = models.TextField(blank=True)
     tags = models.ManyToManyField(Tag, blank=True)
@@ -54,8 +56,10 @@ class UserProfile(models.Model):
     ethnicity = models.CharField(max_length=255, blank=True)
     position = models.CharField(max_length=255, blank=True)
     current_employer = models.CharField(max_length=255, blank=True)
-    bookmarks = models.ManyToManyField(Question)
     profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True)
+
+    def __unicode__(self):
+        return self.full_name
 
     @property
     def full_name(self):

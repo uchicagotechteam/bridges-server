@@ -50,7 +50,8 @@ class QuestionTests(APITestCase):
 
 
         Question.objects.create(title=test_title, description=test_description,
-        answer=test_answer, number_of_views=test_num_views)
+        answer=test_answer, number_of_views=test_num_views,
+        owner=User.objects.get(username="testUser123"))
         saved_question = Question.objects.get()
 
         response = self.bridges_client.get('/questions/')
@@ -88,16 +89,19 @@ class QuestionTests(APITestCase):
         test_answer = 'The muffin man lives on cherry lane'
         test_num_views = 1025
 
+        owner = User.objects.get(username='testUser123')
 
         Question.objects.create(title=test_title, description=test_description,
-        answer=test_answer, number_of_views=test_num_views)
+        answer=test_answer, number_of_views=test_num_views, owner=owner)
 
         test_title2 = "How much wood could a woodchuck chuck?"
         test_description2 = "Woodchucks are indigenous to the swamp"
         test_answer2 = "A lot of wood"
 
+        owner = User.objects.get(username='testUser123')
+
         Question.objects.create(title=test_title2, description=test_description2,
-        answer=test_answer2, number_of_views=test_num_views)
+        answer=test_answer2, number_of_views=test_num_views, owner=owner)
 
         response = self.bridges_client.get('/questions/', {'search': 'wood'})
         returned_questions = response.json()['results']
@@ -259,9 +263,11 @@ class BookmarkTests(APITestCase):
         # If the question ids are invalid, we should let the client know
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+        owner = User.objects.get(username='testUser123')
+
         question_data = [{'id': x, 'title': 'title' + str(x)} for x in range(1, 6)]
         for question in question_data:
-            Question.objects.create(id=question['id'], title=question['title'])
+            Question.objects.create(id=question['id'], title=question['title'], owner=owner)
 
         response = self.bridges_client.post('/bookmarks/', data, format='json')
 
@@ -283,8 +289,10 @@ class BookmarkTests(APITestCase):
         set_auth(self.bridges_client)
 
         question_data = [{'id': x, 'title': 'title' + str(x)} for x in range(1, 6)]
+        owner = User.objects.get(username='testUser123')
+
         for question in question_data:
-            Question.objects.create(id=question['id'], title=question['title'])
+            Question.objects.create(id=question['id'], title=question['title'], owner=owner)
 
         profile = UserProfile.objects.get(user=User.objects.get(username='testUser123'))
         questions = Question.objects.filter(id__in=range(0, 6))
