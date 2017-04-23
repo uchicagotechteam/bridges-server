@@ -12,7 +12,7 @@ from django.core.exceptions import ValidationError
 gender_options = (('male', 'Male'), ('female', 'Female'))
 profile_attributes = (
     ('gender', 'Gender'), ('ethnicity', 'Ethnicity'), ('position', 'Position'),
-    ('current_employer', 'Current Employer'))
+    ('current_employer', 'Current Employer'), ('disabilities', 'Disabilities'))
 
 class Tag(models.Model):
     slug = models.CharField(max_length=50, unique=True)
