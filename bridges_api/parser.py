@@ -1,66 +1,64 @@
 from csv import DictReader
 
-def parseEmployerNames(filename):
-    with open(filename, mode='r') as csv:
-        data = DictReader(csv)
-        # Mapping from dictionary keys to column names:
-        params = {
-            'wage' : 'Ending Wage', # NOTE: starting vs ending wage?
-            'employer' : 'Employer Name',
-            'position' : 'Position Title',
-            'ethnicity' : 'Ethnicity',
-            'gender' : 'Gender'
-        }
-        keys = {
-            'employer',
-            'position',
-            'ethnicity',
-            'gender'
-        }
-        sets = {k : set() for k in keys}
-        avgs = {k : {} for k in keys}
-        counts = {k : {} for k in keys}
+def parse_demographic_data(csvFile):
+    data = DictReader(csvFile)
 
-        for row in data:
-            for key in sets.keys():
-                val = row[params[key]]
-                sets[key].add(val)
+    # Mapping from dictionary keys to column names:
+    params = {
+        'wage' : 'Ending Wage', # NOTE: starting vs ending wage?
+        'employer' : 'Employer Name',
+        'position' : 'Position Title',
+        'ethnicity' : 'Ethnicity',
+        'gender' : 'Gender'
+    }
+    keys = {
+        'employer',
+        'position',
+        'ethnicity',
+        'gender'
+    }
+    sets = {k : set() for k in keys}
+    avgs = {k : {} for k in keys}
+    counts = {k : {} for k in keys}
 
-                if row[params['wage']] != "":
-                    try:
-                        salary = float(row[params['wage']])
-                    except ValueError:
-                        continue
-                    for key in avgs.keys():
-                        val = row[params[key]]
-                        if val in avgs[key].keys():
-                            avgs[key][val] += salary
-                            counts[key][val] += 1
-                        else:
-                            avgs[key][val] = salary
-                            counts[key][val] = 1
+    for row in data:
+        for key in sets.keys():
+            val = row[params[key]]
+            sets[key].add(val)
 
-        for k in counts.keys():
-            for l in counts[k].keys():
-                if counts[k][l] > 0:
-                    avgs[k][l] /= counts[k][l]
+            if row[params['wage']] != "":
+                try:
+                    salary = float(row[params['wage']])
+                except ValueError:
+                    continue
+                for key in avgs.keys():
+                    val = row[params[key]]
+                    if val in avgs[key].keys():
+                        avgs[key][val] += salary
+                        counts[key][val] += 1
+                    else:
+                        avgs[key][val] = salary
+                        counts[key][val] = 1
 
-        return sets, avgs
+    for k in counts.keys():
+        for l in counts[k].keys():
+            if counts[k][l] > 0:
+                avgs[k][l] /= counts[k][l]
 
-def getBarriers(filename):
-    with open(filename, mode='r') as csv:
-        data = DictReader(csv)
-        barrierSet = set()
-        for row in data:
-            if row["Barrier"] != '':
-                barrierSet.add(row["Barrier"])
+    return sets, avgs
+
+def get_barriers(csvFile):
+    data = DictReader(csvFile)
+    barrierSet = set()
+    for row in data:
+        if row["Barrier"] != '':
+            barrierSet.add(row["Barrier"])
     return barrierSet
 
-def getDisabilities(filename):
-    with open(filename, mode='r') as csv:
-        data = DictReader(csv)
-        disabilitySet = set()
-        for row in data:
-            if row["Disability"] != '':
-                disabilitySet.add(row["Disability"])
+def get_disabilities(csvFile):
+    data = DictReader(csvFile)
+    disabilitySet = set()
+    for row in data:
+        if row["Disability"] != '':
+            disabilitySet.add(row["Disability"])
     return disabilitySet

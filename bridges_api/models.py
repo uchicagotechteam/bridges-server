@@ -9,10 +9,63 @@ from rest_framework.authtoken.models import Token
 from django.utils.text import slugify
 from django.core.exceptions import ValidationError
 
+import parser
+
 gender_options = (('male', 'Male'), ('female', 'Female'))
 profile_attributes = (
     ('gender', 'Gender'), ('ethnicity', 'Ethnicity'), ('position', 'Position'),
     ('current_employer', 'Current Employer'))
+
+def ensure_unique(obj):
+    obj.slug = slugify((obj.attribute + obj.value).replace(' ', ''))
+    if (len(type(obj).objects.filter(slug=obj.slug)) != 0):
+        raise ValidationError("%s is not unique" % obj.name)
+    return obj
+
+
+class DataFile(models.Model):
+    data_file = models.FileField(upload_to='data/')
+
+    def get_datasets(self):
+        extension = self.data_file.name.split('.')[1]
+        if extension in ('xlsx', 'xls'):
+            print "uh oh!"
+
+    @property
+    def name(self):
+        return self.data_file.name.split('/')[-1]
+
+    def __unicode__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        super(DataFile, self).save(*args, **kwargs)
+
+class ParticipantAttribute(models.Model):
+    name = models.CharField(max_length=100)
+    slug = models.CharField(max_length=100, unique=True)
+    average_salary = models.DecimalField(max_digits=7, decimal_places=4)
+    num_participants = models.IntegerField()
+
+    def __unicode__(self):
+        return self.name
+
+    def clean(self):
+        return ensure_unique(self)
+
+    class Meta:
+        abstract = True
+
+class Position(ParticipantAttribute):
+    pass
+
+class Ethnicity(ParticipantAttribute):
+    class Meta:
+        verbose_name = 'Ethnicity'
+        verbose_name_plural = 'Ethnicities'
+
+class Gender(ParticipantAttribute):
+    pass
 
 class Tag(models.Model):
     slug = models.CharField(max_length=50, unique=True)
@@ -23,10 +76,7 @@ class Tag(models.Model):
         return u'%s' % (self.value)
 
     def clean(self):
-        self.slug = slugify((self.attribute + self.value).replace(' ', ''))
-        if (len(type(self).objects.filter(slug=self.slug)) != 0):
-            raise ValidationError("Tag is not unique")
-        return self
+        return ensure_unique(self)
 
 class Question(models.Model):
     title = models.CharField(max_length=300)
@@ -69,6 +119,13 @@ class UserProfile(models.Model):
        self.pk = self.user.pk
        super(UserProfile, self).save(*args, **kwargs)
 
+class Employer(models.Model):
+    name = models.CharField(max_length=255)
+    address = models.CharField(max_length=255, blank=True)
+    rating = models.DecimalField(max_digits=2, decimal_places=0, default=0)
+    averagesalary = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    questions = models.ManyToManyField(Question)
+
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
    """
@@ -88,10 +145,3 @@ def save_user_profile(sender, instance, **kwargs):
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
-
-class Employer(models.Model):
-    name = models.CharField(max_length=255)
-    address = models.CharField(max_length=255, blank=True)
-    rating = models.DecimalField(max_digits=2, decimal_places=0, default=0)
-    averagesalary = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    questions = models.ManyToManyField(Question)

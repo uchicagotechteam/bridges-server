@@ -2,7 +2,9 @@ from django.contrib import admin
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
 from django.http import HttpResponseRedirect
-from bridges_api.models import Question, Tag, UserProfile, Employer
+from bridges_api.models import (
+    Question, Tag, UserProfile, Employer, DataFile, Position, Ethnicity, Gender
+)
 
 class CustomUserAdmin(UserAdmin):
     def response_add(self, request, obj, post_url_continue=None):
@@ -27,7 +29,23 @@ class TagAdmin(admin.ModelAdmin):
     list_display = ('value',)
 
 class EmployerAdmin(admin.ModelAdmin):
-	list_display=('name',)
+	list_display = ('name',)
+
+class DataFileAdmin(admin.ModelAdmin):
+    list_display = ('name', )
+
+class ParticipantAttributeAdmin(admin.ModelAdmin):
+    fields = ('name', 'average_salary', 'num_participants')
+    list_display = ('name', )
+
+class PositionAdmin(ParticipantAttributeAdmin):
+    pass
+
+class EthnicityAdmin(ParticipantAttributeAdmin):
+    pass
+
+class GenderAdmin(ParticipantAttributeAdmin):
+    pass
 
 admin.site.unregister(User)
 admin.site.register(User, CustomUserAdmin)
@@ -35,3 +53,7 @@ admin.site.register(UserProfile, UserProfileAdmin)
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Tag, TagAdmin)
 admin.site.register(Employer, EmployerAdmin)
+admin.site.register(DataFile, DataFileAdmin)
+admin.site.register(Position, PositionAdmin)
+admin.site.register(Ethnicity, EthnicityAdmin)
+admin.site.register(Gender, GenderAdmin)
