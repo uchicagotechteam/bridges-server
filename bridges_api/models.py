@@ -29,7 +29,7 @@ class DataFile(models.Model):
     def get_datasets(self):
         extension = self.data_file.name.split('.')[1]
         if extension in ('xlsx', 'xls'):
-            print "uh oh!"
+            csvFile = parser.convert_to_csv()
 
     @property
     def name(self):
@@ -38,8 +38,14 @@ class DataFile(models.Model):
     def __unicode__(self):
         return self.name
 
-    def save(self, *args, **kwargs):
-        super(DataFile, self).save(*args, **kwargs)
+    def clean(self):
+        excel_filename = self.data_file.name
+        extension = excel_filename.split('.')[1]
+        if extension in ('xlsx', 'xls'):
+            csvFile, csv_filepath = parser.convert_excel_to_csv(self.data_file)
+            import pdb; pdb.set_trace()
+            self.data_file.save(csv_filepath, csvFile)
+        return self
 
 class ParticipantAttribute(models.Model):
     name = models.CharField(max_length=100)
@@ -56,13 +62,13 @@ class ParticipantAttribute(models.Model):
     class Meta:
         abstract = True
 
-class Position(ParticipantAttribute):
-    pass
-
 class Ethnicity(ParticipantAttribute):
     class Meta:
         verbose_name = 'Ethnicity'
         verbose_name_plural = 'Ethnicities'
+
+class Position(ParticipantAttribute):
+    pass
 
 class Gender(ParticipantAttribute):
     pass

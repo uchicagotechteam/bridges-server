@@ -1,7 +1,22 @@
-from csv import DictReader
+import os
+import xlrd
+import csv
+
+def convert_excel_to_csv(excel_file_obj):
+    workbook = xlrd.open_workbook(file_contents=excel_file_obj.read())
+    sheet_names = workbook.sheet_names()
+    sheet = workbook.sheet_by_name(sheet_names[0])
+    excel_file_obj.name = excel_file_obj.name.replace('xlsx', 'csv').replace('xls', 'csv')
+    excel_file_obj.open('w+')
+    csv_writer = csv.writer(excel_file_obj, quoting=csv.QUOTE_ALL)
+
+    for row_number in xrange(sheet.nrows):
+        csv_writer.writerow(sheet.row_values(row_number))
+    return (excel_file_obj, excel_file_obj.path.replace('xlsx', 'csv').replace('xls', 'csv'))
+
 
 def parse_demographic_data(csvFile):
-    data = DictReader(csvFile)
+    data = csv.DictReader(csvFile)
 
     # Mapping from dictionary keys to column names:
     params = {
@@ -48,7 +63,7 @@ def parse_demographic_data(csvFile):
     return sets, avgs
 
 def get_barriers(csvFile):
-    data = DictReader(csvFile)
+    data = csv.DictReader(csvFile)
     barrierSet = set()
     for row in data:
         if row["Barrier"] != '':
@@ -56,7 +71,7 @@ def get_barriers(csvFile):
     return barrierSet
 
 def get_disabilities(csvFile):
-    data = DictReader(csvFile)
+    data = csv.DictReader(csvFile)
     disabilitySet = set()
     for row in data:
         if row["Disability"] != '':
