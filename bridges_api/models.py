@@ -15,7 +15,7 @@ import parser
 gender_options = (('male', 'Male'), ('female', 'Female'))
 profile_attributes = (
     ('gender', 'Gender'), ('ethnicity', 'Ethnicity'), ('position', 'Position'),
-    ('current_employer', 'Current Employer'))
+    ('current_employer', 'Current Employer'), ('disabilities', 'Disabilities'))
 
 class DataFile(models.Model):
     data_file = models.FileField(upload_to='data/')
@@ -135,14 +135,15 @@ class UserProfile(models.Model):
     ethnicity = models.CharField(max_length=255, blank=True)
     position = models.CharField(max_length=255, blank=True)
     current_employer = models.CharField(max_length=255, blank=True)
+    bookmarks = models.ManyToManyField(Question, blank=True)
     profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True)
-
-    def __unicode__(self):
-        return self.full_name
 
     @property
     def full_name(self):
         return "%s %s" % (self.first_name, self.last_name)
+
+    def __unicode__(self):
+        return self.full_name
 
     def save(self, *args, **kwargs):
        self.pk = self.user.pk
