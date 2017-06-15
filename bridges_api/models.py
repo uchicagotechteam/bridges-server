@@ -56,6 +56,10 @@ class DataFile(models.Model):
             self.data_file.save(csv_filepath, csvFile)
         return self
 
+    def save(self, *args, **kwargs):
+        self.get_demographic_data()
+        super(DataFile, self).save(*args, **kwargs)
+
 class ParticipantAttribute(models.Model):
     name = models.CharField(max_length=100)
     slug = models.CharField(max_length=100, unique=True)
