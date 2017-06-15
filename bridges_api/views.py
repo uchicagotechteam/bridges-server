@@ -14,13 +14,16 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
 
-from bridges_api.models import Question, UserProfile, Employer, Tag
+from bridges_api.models import Question, UserProfile, Employer, Tag, Position, Ethnicity, Gender
 from bridges_api.serializers import (
     QuestionSerializer,
     UserSerializer,
     UserProfileSerializer,
     TagSerializer,
-    EmployerSerializer
+    EmployerSerializer,
+    PositionSerializer,
+    EthnicitySerializer,
+    GenderSerializer
 )
 
 from permissions import MustBeSuperUserToGET, IsOwnerOrCreateOnly
@@ -215,6 +218,18 @@ class BookmarksManager(APIView):
 class TagList(generics.ListAPIView):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+
+class PositionList(generics.ListAPIView):
+    queryset = Position.objects.all()
+    serializer_class = PositionSerializer
+
+class EthnicityList(generics.ListAPIView):
+    queryset = Ethnicity.objects.all()
+    serializer_class = EthnicitySerializer
+
+class GenderList(generics.ListAPIView):
+    queryset = Gender.objects.all()
+    serializer_class = GenderSerializer
 
 class EmployerList(generics.ListAPIView):
     queryset = Employer.objects.all()

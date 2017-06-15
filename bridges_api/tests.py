@@ -303,3 +303,7 @@ class BookmarkTests(APITestCase):
         response = self.bridges_client.get('/bookmarks/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Response should contain the questions associated with that user's bookmarks
+
+
+class ParticipantAttributeTests(APITestCase):
+    bridges_client = APIClient()

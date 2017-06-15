@@ -13,7 +13,10 @@ urlpatterns = [
     url(r'^tags/$', views.TagList.as_view(), name='tag-list'),
     url(r'^employers/$', views.EmployerList.as_view(), name='employer-list'),
     url(r'^employers/(?P<pk>[0-9]+)/$', views.EmployerDetail.as_view()),
-    url(r'^bookmarks/', views.BookmarksManager.as_view(), name='bookmarks'),
+    url(r'^positions/$', views.PositionList.as_view(), name='position-list'),
+    url(r'^ethnicities/$', views.EthnicityList.as_view(), name='ethnicity-list'),
+    url(r'^genders/$', views.GenderList.as_view(), name='gender-list'),
+    url(r'^bookmarks/', views.BookmarksManager.as_view(), name='bookmarks')
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

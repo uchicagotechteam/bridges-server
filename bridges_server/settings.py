@@ -48,7 +48,7 @@ INSTALLED_APPS = [
 ]
 
 REST_FRAMEWORK = {
-    'PAGE_SIZE': 10,
+    'DEFAULT_PAGINATION_CLASS': 'bridges_api.pagination.StandardResultsSetPagination',
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
