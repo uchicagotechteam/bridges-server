@@ -9,7 +9,6 @@ def convert_excel_to_csv(excel_file_obj):
     excel_file_obj.name = excel_file_obj.name.replace('xlsx', 'csv').replace('xls', 'csv')
     excel_file_obj.open('w+')
     csv_writer = csv.writer(excel_file_obj, quoting=csv.QUOTE_ALL)
-
     for row_number in xrange(sheet.nrows):
         csv_writer.writerow(sheet.row_values(row_number))
     return (excel_file_obj, excel_file_obj.path.replace('xlsx', 'csv').replace('xls', 'csv'))
@@ -39,9 +38,10 @@ def parse_demographic_data(csvFile):
     for row in data:
         for key in sets.keys():
             val = row[params[key]]
-            sets[key].add(val)
+            if len(val) > 0:
+                sets[key].add(val)
 
-            if row[params['wage']] != "":
+            if len(row[params['wage']]) > 0:
                 try:
                     salary = float(row[params['wage']])
                 except ValueError:
@@ -60,7 +60,7 @@ def parse_demographic_data(csvFile):
             if counts[k][l] > 0:
                 avgs[k][l] /= counts[k][l]
 
-    return sets, avgs
+    return sets, avgs, counts
 
 def get_barriers(csvFile):
     data = csv.DictReader(csvFile)
