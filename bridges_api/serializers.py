@@ -1,6 +1,24 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from bridges_api.models import Question, UserProfile, Tag, Employer
+from bridges_api.models import (
+    Question, UserProfile, Tag, Employer, Position, Ethnicity, Gender
+)
+
+# Participant attribute serializers
+class PositionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Position
+        fields = ('name',)
+
+class EthnicitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Gender
+        fields = ('name',)
+
+class GenderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Gender
+        fields = ('name',)
 
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,14 +35,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
                   'ethnicity', 'disabilities', 'current_employer',
                   'position', 'first_name', 'last_name',
                   'email', 'user_id', 'profile_picture')
-
-class QuestionSerializer(serializers.ModelSerializer):
-    tags = TagSerializer(many=True)
-    owner = UserProfileSerializer()
-    class Meta:
-        model = Question
-        fields = ('id', 'title', 'description', 'answer',
-                  'tags', 'number_of_views', 'owner')
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -47,6 +57,14 @@ class UserSerializer(serializers.ModelSerializer):
                 setattr(instance, attr, value)
         instance.save()
         return instance
+
+class QuestionSerializer(serializers.ModelSerializer):
+    tags = TagSerializer(many=True)
+    owner = UserProfileSerializer()
+    class Meta:
+        model = Question
+        fields = ('id', 'title', 'description', 'answer',
+                  'tags', 'number_of_views', 'owner')
 
 class EmployerSerializer(serializers.ModelSerializer):
     class Meta:
