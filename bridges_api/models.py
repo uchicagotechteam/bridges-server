@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
-from django.db import IntegrityError
+from django.db import transaction, IntegrityError
 from django.dispatch import receiver
 from django.conf import settings
 from rest_framework.authtoken.models import Token
@@ -38,7 +38,8 @@ class DataFile(models.Model):
         for demographic in demographics:
             for obj in demographic:
                 try:
-                    obj.save()
+                    with transaction.atomic():
+                        obj.save()
                 except IntegrityError:
                     continue
     @property
