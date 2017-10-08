@@ -14,7 +14,7 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
 
-from bridges_api.models import Question, UserProfile, Employer, Tag, Position, Ethnicity, Gender
+from bridges_api.models import Question, UserProfile, Employer, Tag, Position, Ethnicity, Gender, Disability
 from bridges_api.serializers import (
     QuestionSerializer,
     UserSerializer,
@@ -23,6 +23,7 @@ from bridges_api.serializers import (
     EmployerSerializer,
     PositionSerializer,
     EthnicitySerializer,
+    DisabilitySerializer,
     GenderSerializer
 )
 
@@ -234,6 +235,10 @@ class GenderList(generics.ListAPIView):
 class EmployerList(generics.ListAPIView):
     queryset = Employer.objects.all()
     serializer_class = EmployerSerializer
+
+class DisabilityList(generics.ListAPIView):
+    queryset = Disability.objects.all()
+    serializer_class = DisabilitySerializer
 
 class EmployerDetail(generics.RetrieveAPIView):
     queryset = Employer.objects.all()

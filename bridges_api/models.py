@@ -88,6 +88,10 @@ class Ethnicity(ParticipantAttribute):
         verbose_name = 'Ethnicity'
         verbose_name_plural = 'Ethnicities'
 
+class Disability(ParticipantAttribute):
+    class Meta:
+        verbose_name_plural = 'Disabilities'
+
 class Position(ParticipantAttribute):
     pass
 

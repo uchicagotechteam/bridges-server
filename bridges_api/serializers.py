@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from bridges_api.models import (
-    Question, UserProfile, Tag, Employer, Position, Ethnicity, Gender
+    Question, UserProfile, Tag, Employer, Position, Ethnicity, Disability, Gender
 )
 
 # Participant attribute serializers
@@ -12,12 +12,17 @@ class PositionSerializer(serializers.ModelSerializer):
 
 class EthnicitySerializer(serializers.ModelSerializer):
     class Meta:
-        model = Gender
+        model = Ethnicity
         fields = ('name',)
 
 class GenderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Gender
+        fields = ('name',)
+
+class DisabilitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Disability
         fields = ('name',)
 
 class TagSerializer(serializers.ModelSerializer):
