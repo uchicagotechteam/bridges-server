@@ -143,7 +143,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-print("Repo dir: " + os.environ.get('OPENSHIFT_REPO_DIR'))
+print("Repo dir: " + str(os.environ.get('OPENSHIFT_REPO_DIR')))
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/

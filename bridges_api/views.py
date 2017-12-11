@@ -27,7 +27,7 @@ from bridges_api.serializers import (
     GenderSerializer
 )
 
-from permissions import MustBeSuperUserToGET, IsOwnerOrCreateOnly
+from .permissions import MustBeSuperUserToGET, IsOwnerOrCreateOnly
 
 from bridges_api import recommendations
 
