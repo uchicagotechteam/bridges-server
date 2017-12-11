@@ -144,7 +144,7 @@ USE_L10N = True
 USE_TZ = True
 
 print("Repo dir: " + str(os.environ.get('OPENSHIFT_REPO_DIR')))
-print("postgres dir: " + str(os.environ.get('POSTGRESQL_USER')))
+print("postgres host: " + str(os.environ.get('POSTGRESQL_SERVICE_HOST')))
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
