@@ -22,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'np&)l+u$v8d38&!4+aby3c)e9=9tlm4+x!@q+&wckku8y1_eq4'
 
-if os.environ.get('OPENSHIFT_REPO_DIR'):
+if os.environ.get('POSTGRESQL_USER'):
     # Don't want to run debug mode in prod
     DEBUG = True
     ALLOWED_HOSTS = ["bridgesapi-skypath.rhcloud.com"]
@@ -88,15 +88,15 @@ WSGI_APPLICATION = 'bridges_server.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
-if os.environ.get('OPENSHIFT_REPO_DIR'):
+if os.environ.get('POSTGRESQL_USER'):
     DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'bridgesapi',
-        'USER': os.environ['OPENSHIFT_MYSQL_DB_USERNAME'],
-        'PASSWORD': os.environ['OPENSHIFT_MYSQL_DB_PASSWORD'],
-        'HOST': os.environ['OPENSHIFT_MYSQL_DB_HOST'],
-        'PORT': os.environ['OPENSHIFT_MYSQL_DB_PORT'],
+        'USER': os.environ['POSTGRESQL_USER'],
+        'PASSWORD': os.environ['POSTGRESQL_PASSWORD'],
+        'HOST': os.environ['POSTGRESQL_SERVICE_HOST'],
+        'PORT': os.environ['POSTGRESQL_SERVICE_PORT'],
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
             }
@@ -142,6 +142,8 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+print("Repo dir: " + os.environ.get('OPENSHIFT_REPO_DIR'))
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
