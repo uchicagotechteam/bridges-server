@@ -149,12 +149,12 @@ print("ON_OPENSHIFT: " + str(ON_OPENSHIFT))
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
-if ON_OPENSHIFT:
-    STATIC_ROOT = os.path.join(os.path.dirname(__file__), 'wsgi/static')
-    MEDIA_ROOT = STATIC_ROOT + 'media/'
-else:
-    STATIC_ROOT = os.path.join(os.path.dirname(__file__), 'static')
-    MEDIA_ROOT = os.path.join(os.path.dirname(__file__), 'media')
+# if ON_OPENSHIFT:
+#    STATIC_ROOT = os.path.join(os.path.dirname(__file__), 'wsgi/static')
+#    MEDIA_ROOT = STATIC_ROOT + 'media/'
+# else:
+STATIC_ROOT = os.path.join(os.path.dirname(__file__), 'static')
+MEDIA_ROOT = os.path.join(os.path.dirname(__file__), 'media')
 
 STATIC_URL = '/static/'
 MEDIA_URL = STATIC_URL + 'media/'
