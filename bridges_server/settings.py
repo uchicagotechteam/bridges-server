@@ -22,7 +22,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'np&)l+u$v8d38&!4+aby3c)e9=9tlm4+x!@q+&wckku8y1_eq4'
 
-if os.environ.get('DATABASE_USER'):
+ON_OPENSHIFT = os.environ.get('DATABASE_USER') != None
+
+if ON_OPENSHIFT:
     # Don't want to run debug mode in prod
     DEBUG = True
     ALLOWED_HOSTS = ["bridgesapi-skypath.rhcloud.com"]
@@ -88,7 +90,7 @@ WSGI_APPLICATION = 'bridges_server.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
-if os.environ.get('DATABASE_USER'):
+if ON_OPENSHIFT:
     DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -143,12 +145,11 @@ USE_L10N = True
 
 USE_TZ = True
 
-print("Repo dir: " + str(os.environ.get('OPENSHIFT_REPO_DIR')))
-print("postgres host: " + str(os.environ.get('DATABASE_USER')))
+print("ON_OPENSHIFT: " + str(ON_OPENSHIFT))
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
-if os.environ.get('OPENSHIFT_REPO_DIR'):
+if ON_OPENSHIFT:
     STATIC_ROOT = os.environ['OPENSHIFT_REPO_DIR'] + 'wsgi/static/'
     MEDIA_ROOT = STATIC_ROOT + 'media/'
 else:
