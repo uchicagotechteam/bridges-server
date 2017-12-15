@@ -93,7 +93,7 @@ WSGI_APPLICATION = 'bridges_server.wsgi.application'
 if ON_OPENSHIFT:
     DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.mysql',
         'NAME': 'bridgesapi',
         'USER': os.environ['DATABASE_USER'],
         'PASSWORD': os.environ['DATABASE_PASSWORD'],
