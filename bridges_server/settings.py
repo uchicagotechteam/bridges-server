@@ -22,18 +22,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'np&)l+u$v8d38&!4+aby3c)e9=9tlm4+x!@q+&wckku8y1_eq4'
 
-ON_OPENSHIFT = os.environ.get('DATABASE_USER') != None
-
-if ON_OPENSHIFT:
-    # Don't want to run debug mode in prod
-    DEBUG = True
-    ALLOWED_HOSTS = ["bridgesapi-skypath.rhcloud.com"]
-    # Redirect all HTTP requests via HTTPS
-    SECURE_SSL_REDIRECT = True
-else:
-    DEBUG = True
-    ALLOWED_HOSTS = ["*"]
-
+DEBUG = True
+ALLOWED_HOSTS = ["*"]
+SECURE_SSL_REDIRECT = True
 
 # Application definition
 
@@ -90,27 +81,27 @@ WSGI_APPLICATION = 'bridges_server.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
-if ON_OPENSHIFT:
-    DATABASES = {
+# if ON_OPENSHIFT:
+#     DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'default',
+#         'USER': os.environ['DATABASE_USER'],
+#         'PASSWORD': os.environ['DATABASE_PASSWORD'],
+#         'HOST': os.environ['POSTGRESQL_SERVICE_HOST'],
+#         'PORT': os.environ['POSTGRESQL_SERVICE_PORT'],
+#         'OPTIONS': {
+#             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+#             }
+#         }
+#     }
+# else:
+DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'default',
-        'USER': os.environ['DATABASE_USER'],
-        'PASSWORD': os.environ['DATABASE_PASSWORD'],
-        'HOST': os.environ['POSTGRESQL_SERVICE_HOST'],
-        'PORT': os.environ['POSTGRESQL_SERVICE_PORT'],
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-            }
-        }
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        }
-    }
+}
 
 
 # Password validation
@@ -145,14 +136,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-print("ON_OPENSHIFT: " + str(ON_OPENSHIFT))
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.10/howto/static-files/
-# if ON_OPENSHIFT:
-#    STATIC_ROOT = os.path.join(os.path.dirname(__file__), 'wsgi/static')
-#    MEDIA_ROOT = STATIC_ROOT + 'media/'
-# else:
 STATIC_ROOT = os.path.join(os.path.dirname(__file__), 'static')
 MEDIA_ROOT = os.path.join(os.path.dirname(__file__), 'media')
 
