@@ -1,1 +1,1 @@
-web: gunicorn bridges_server.wsgi
+web: gunicorn bridgesapi.wsgi
